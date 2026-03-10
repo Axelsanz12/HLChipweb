@@ -1,0 +1,158 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="HLchip.SiteMaster" %>
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HLchip Potenciación</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #050608;
+      --dark: #0a0c10;
+      --card: #0e1118;
+      --line: rgba(255,255,255,0.07);
+      --blue: #00aaff;
+      --red: #ff1e1e;
+      --text: #e8ecf0;
+      --muted: #6b7280;
+    }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      background: rgba(5,6,8,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 1.5rem;
+      color: #fff; text-decoration: none;
+    }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600; font-size: 0.88rem;
+      color: var(--muted); text-decoration: none;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #25D366; color: #000;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; padding: 9px 20px; border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: #1fba57; }
+    /* FOOTER */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--line);
+      padding: 28px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 1.2rem; color: #fff;
+    }
+    .footer-brand span { color: var(--blue); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+      text-decoration: none; text-transform: uppercase;
+      letter-spacing: 0.08em; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--blue); }
+    .footer-copy {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+    }
+    /* WA FLOAT */
+    .wa-float {
+      position: fixed; bottom: 28px; right: 28px; z-index: 500;
+      display: flex; align-items: center; gap: 10px;
+      background: #25D366; color: #000;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 0.9rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; padding: 13px 22px;
+      border-radius: 50px;
+      box-shadow: 0 8px 32px rgba(37,211,102,0.4);
+      transition: all 0.2s;
+    }
+    .wa-float:hover { transform: translateY(-3px); }
+    .wa-dot {
+      position: absolute; top: -4px; right: -4px;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: var(--red); border: 2px solid var(--black);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+    main { padding-top: 64px; }
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; gap: 12px; text-align: center; padding: 20px; }
+      .wa-float { bottom: 16px; right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/Default.aspx" class="nav-logo">HL<span>chip</span></a>
+    <ul class="nav-links">
+      <li><a href="/Default.aspx#servicios">Servicios</a></li>
+      <li><a href="/Default.aspx#que-es">Chiptuning</a></li>
+      <li><a href="/Default.aspx#curso">Curso</a></li>
+      <li><a href="/Contacto.aspx">Contacto</a></li>
+    </ul>
+    <a href="https://wa.me/541123177778" target="_blank" class="nav-cta">WhatsApp</a>
+  </nav>
+
+  <!-- CONTENIDO DE CADA PÁGINA -->
+<form id="form1" runat="server">
+    <main>
+      <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+    </main>
+  </form>
+
+  <!-- WA FLOTANTE -->
+  <a href="https://wa.me/541123177778" target="_blank" class="wa-float">
+    💬 Consultar
+    <span class="wa-dot"></span>
+  </a>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">HL<span>chip</span> Potenciación</div>
+    <div class="footer-links">
+      <a href="https://wa.me/541123177778" target="_blank">WhatsApp</a>
+      <a href="https://www.instagram.com/hlchip.ok" target="_blank">Instagram</a>
+    </div>
+    <div class="footer-copy">© 2025 HLchip — Benavídez, Buenos Aires</div>
+  </footer>
+
+</body>
+</html>
