@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace HLchip
 {
@@ -11,7 +7,9 @@ namespace HLchip
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            bool logueado = Session["AdminUser"] != null;
+            lnkAdmin.Visible = logueado;
+            lnkSalir.Visible = logueado;
         }
     }
 }

@@ -7,146 +7,146 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace HLchip.Admin
+namespace HLchip.Cursos
 {
 
 
-    public partial class Panel
+    public partial class Detalle
     {
 
         /// <summary>
-        /// Control litUser.
+        /// Control pnlCurso.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litUser;
+        protected global::System.Web.UI.WebControls.Panel pnlCurso;
 
         /// <summary>
-        /// Control btnLogout.
+        /// Control litNombre.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLogout;
+        protected global::System.Web.UI.WebControls.Literal litNombre;
 
         /// <summary>
-        /// Control litTotalTurnos.
+        /// Control litDesc.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litTotalTurnos;
+        protected global::System.Web.UI.WebControls.Literal litDesc;
 
         /// <summary>
-        /// Control litPendientes.
+        /// Control litDuracion.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litPendientes;
+        protected global::System.Web.UI.WebControls.Literal litDuracion;
 
         /// <summary>
-        /// Control litConfirmados.
+        /// Control litModalidad.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litConfirmados;
+        protected global::System.Web.UI.WebControls.Literal litModalidad;
 
         /// <summary>
-        /// Control litConsultas.
+        /// Control rptTemario.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litConsultas;
+        protected global::System.Web.UI.WebControls.Repeater rptTemario;
 
         /// <summary>
-        /// Control upTurnos.
+        /// Control litPrecio.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upTurnos;
+        protected global::System.Web.UI.WebControls.Literal litPrecio;
 
         /// <summary>
-        /// Control rptTurnos.
+        /// Control txtNombre.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptTurnos;
+        protected global::System.Web.UI.WebControls.TextBox txtNombre;
 
         /// <summary>
-        /// Control pnlSinTurnos.
+        /// Control txtTelefono.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSinTurnos;
+        protected global::System.Web.UI.WebControls.TextBox txtTelefono;
 
         /// <summary>
-        /// Control rptMapas.
+        /// Control txtEmail.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptMapas;
+        protected global::System.Web.UI.WebControls.TextBox txtEmail;
 
         /// <summary>
-        /// Control pnlSinMapas.
+        /// Control txtConsulta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSinMapas;
+        protected global::System.Web.UI.WebControls.TextBox txtConsulta;
 
         /// <summary>
-        /// Control rptInscripciones.
+        /// Control hfIdCurso.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptInscripciones;
+        protected global::System.Web.UI.WebControls.HiddenField hfIdCurso;
 
         /// <summary>
-        /// Control pnlSinInscripciones.
+        /// Control btnInscribir.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSinInscripciones;
+        protected global::System.Web.UI.WebControls.Button btnInscribir;
 
         /// <summary>
-        /// Control rptConsultas.
+        /// Control pnlOk.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptConsultas;
+        protected global::System.Web.UI.WebControls.Panel pnlOk;
 
         /// <summary>
-        /// Control pnlSinConsultas.
+        /// Control pnlNotFound.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSinConsultas;
+        protected global::System.Web.UI.WebControls.Panel pnlNotFound;
     }
 }

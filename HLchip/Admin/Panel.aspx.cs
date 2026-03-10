@@ -11,16 +11,13 @@ namespace HLchip.Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Verificar sesión
             if (Session["AdminUser"] == null)
                 Response.Redirect("~/Admin/Login.aspx");
 
             litUser.Text = Session["AdminUser"].ToString();
 
             if (!IsPostBack)
-            {
                 CargarDatos();
-            }
         }
 
         private void CargarDatos()
@@ -72,6 +69,51 @@ namespace HLchip.Admin
                 else
                 {
                     pnlSinTurnos.Visible = true;
+                }
+
+                // Cargar pedidos de mapas
+                SqlDataAdapter daMapas = new SqlDataAdapter(@"
+                    SELECT p.Id, p.Nombre, p.Telefono, 
+                           ISNULL(m.Nombre, 'No especificada') AS Marca,
+                           p.Motor, p.TipoMapa, p.ArchivoOriginal,
+                           p.Estado, p.FechaCreacion
+                    FROM PedidosMapas p
+                    LEFT JOIN Marcas m ON p.IdMarca = m.Id
+                    ORDER BY p.FechaCreacion DESC", conn);
+
+                DataTable dtMapas = new DataTable();
+                daMapas.Fill(dtMapas);
+
+                if (dtMapas.Rows.Count > 0)
+                {
+                    rptMapas.DataSource = dtMapas;
+                    rptMapas.DataBind();
+                }
+                else
+                {
+                    pnlSinMapas.Visible = true;
+                }
+
+                // Cargar inscripciones
+                SqlDataAdapter daInscripciones = new SqlDataAdapter(@"
+                    SELECT i.Id, i.Nombre, i.Telefono, i.Email,
+                           c.Nombre AS Curso, i.Consulta,
+                           i.Estado, i.FechaCreacion
+                    FROM Inscripciones i
+                    INNER JOIN Cursos c ON i.IdCurso = c.Id
+                    ORDER BY i.FechaCreacion DESC", conn);
+
+                DataTable dtInscripciones = new DataTable();
+                daInscripciones.Fill(dtInscripciones);
+
+                if (dtInscripciones.Rows.Count > 0)
+                {
+                    rptInscripciones.DataSource = dtInscripciones;
+                    rptInscripciones.DataBind();
+                }
+                else
+                {
+                    pnlSinInscripciones.Visible = true;
                 }
 
                 // Cargar consultas

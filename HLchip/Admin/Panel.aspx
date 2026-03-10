@@ -36,26 +36,6 @@
       transition: all 0.2s; margin-left: 16px;
     }
     .btn-logout:hover { border-color: #ff1e1e; color: #ff1e1e; }
-    /* TABS */
-    .tabs {
-      display: flex; gap: 0;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      margin-bottom: 36px;
-    }
-    .tab {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700; font-size: 0.95rem;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 14px 28px; cursor: pointer;
-      color: #6b7280; border-bottom: 2px solid transparent;
-      transition: all 0.2s; background: none; border-top: none;
-      border-left: none; border-right: none;
-    }
-    .tab.active { color: #00aaff; border-bottom-color: #00aaff; }
-    .tab:hover { color: #e8ecf0; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    /* STATS CARDS */
     .stats-row {
       display: grid; grid-template-columns: repeat(4, 1fr);
       gap: 16px; margin-bottom: 36px;
@@ -73,16 +53,30 @@
     .stat-card-num.blue { color: #00aaff; }
     .stat-card-num.green { color: #25D366; }
     .stat-card-num.yellow { color: #febc2e; }
-    .stat-card-num.red { color: #ff1e1e; }
     .stat-card-label {
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.68rem; color: #6b7280;
       letter-spacing: 0.1em; text-transform: uppercase;
     }
-    /* TABLE */
-    .admin-table {
-      width: 100%; border-collapse: collapse;
+    .tabs {
+      display: flex; gap: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 36px;
     }
+    .tab {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; font-size: 0.95rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 14px 28px; cursor: pointer;
+      color: #6b7280; border-bottom: 2px solid transparent;
+      transition: all 0.2s; background: none;
+      border-top: none; border-left: none; border-right: none;
+    }
+    .tab.active { color: #00aaff; border-bottom-color: #00aaff; }
+    .tab:hover { color: #e8ecf0; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .admin-table { width: 100%; border-collapse: collapse; }
     .admin-table th {
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.68rem; color: #00aaff;
@@ -93,7 +87,8 @@
     }
     .admin-table td {
       padding: 14px 16px; font-size: 0.88rem;
-      color: #e8ecf0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: #e8ecf0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
     }
     .admin-table tr:hover td { background: rgba(0,170,255,0.03); }
     .badge {
@@ -102,17 +97,17 @@
       font-size: 0.65rem; padding: 3px 10px;
       border-radius: 100px; letter-spacing: 0.05em;
     }
-    .badge-pendiente { background: rgba(254,188,46,0.1); color: #febc2e; border: 1px solid rgba(254,188,46,0.2); }
+    .badge-pendiente  { background: rgba(254,188,46,0.1); color: #febc2e; border: 1px solid rgba(254,188,46,0.2); }
     .badge-confirmado { background: rgba(37,211,102,0.1); color: #25D366; border: 1px solid rgba(37,211,102,0.2); }
-    .badge-cancelado { background: rgba(255,30,30,0.1); color: #ff6b6b; border: 1px solid rgba(255,30,30,0.2); }
-    .badge-noleida { background: rgba(0,170,255,0.1); color: #00aaff; border: 1px solid rgba(0,170,255,0.2); }
+    .badge-cancelado  { background: rgba(255,30,30,0.1);  color: #ff6b6b; border: 1px solid rgba(255,30,30,0.2); }
+    .badge-recibido   { background: rgba(0,170,255,0.1);  color: #00aaff; border: 1px solid rgba(0,170,255,0.2); }
+    .badge-noleida    { background: rgba(0,170,255,0.1);  color: #00aaff; border: 1px solid rgba(0,170,255,0.2); }
     .btn-accion {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700; font-size: 0.78rem;
       letter-spacing: 0.05em; text-transform: uppercase;
       padding: 5px 12px; border-radius: 4px;
-      cursor: pointer; border: none; transition: all 0.2s;
-      margin-right: 4px;
+      cursor: pointer; border: none; transition: all 0.2s; margin-right: 4px;
     }
     .btn-confirmar { background: rgba(37,211,102,0.15); color: #25D366; }
     .btn-confirmar:hover { background: #25D366; color: #000; }
@@ -121,8 +116,7 @@
     .empty-state {
       text-align: center; padding: 60px 20px;
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.8rem; color: #6b7280;
-      letter-spacing: 0.08em;
+      font-size: 0.8rem; color: #6b7280; letter-spacing: 0.08em;
     }
     @media (max-width: 768px) {
       .admin-section { padding: 80px 16px 40px; }
@@ -136,7 +130,6 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
   <div class="admin-section">
 
-    <!-- HEADER -->
     <div class="admin-header">
       <div>
         <div class="admin-title">Panel <span>Admin</span></div>
@@ -146,7 +139,6 @@
           CssClass="btn-logout" OnClick="btnLogout_Click" />
     </div>
 
-    <!-- STATS -->
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-card-num blue"><asp:Literal ID="litTotalTurnos" runat="server">0</asp:Literal></div>
@@ -166,9 +158,10 @@
       </div>
     </div>
 
-    <!-- TABS -->
     <div class="tabs">
       <button type="button" class="tab active" onclick="mostrarTab('turnos', this)">Turnos</button>
+      <button type="button" class="tab" onclick="mostrarTab('mapas', this)">Pedidos Mapas</button>
+      <button type="button" class="tab" onclick="mostrarTab('inscripciones', this)">Inscripciones</button>
       <button type="button" class="tab" onclick="mostrarTab('consultas', this)">Consultas</button>
     </div>
 
@@ -179,15 +172,8 @@
           <table class="admin-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Cliente</th>
-                <th>Teléfono</th>
-                <th>Servicio</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Vehículo</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>#</th><th>Cliente</th><th>Teléfono</th><th>Servicio</th>
+                <th>Fecha</th><th>Hora</th><th>Vehículo</th><th>Estado</th><th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -201,18 +187,10 @@
                     <td><%# ((DateTime)Eval("FechaTurno")).ToString("dd/MM/yyyy") %></td>
                     <td><%# Eval("HoraTurno") %></td>
                     <td><%# Eval("Vehiculo") %></td>
+                    <td><span class="badge badge-<%# Eval("Estado").ToString().ToLower() %>"><%# Eval("Estado") %></span></td>
                     <td>
-                      <span class="badge badge-<%# Eval("Estado").ToString().ToLower() %>">
-                        <%# Eval("Estado") %>
-                      </span>
-                    </td>
-                    <td>
-                      <asp:LinkButton runat="server" CommandName="Confirmar" 
-                          CommandArgument='<%# Eval("Id") %>'
-                          CssClass="btn-accion btn-confirmar">✓ Confirmar</asp:LinkButton>
-                      <asp:LinkButton runat="server" CommandName="Cancelar" 
-                          CommandArgument='<%# Eval("Id") %>'
-                          CssClass="btn-accion btn-cancelar">✕ Cancelar</asp:LinkButton>
+                      <asp:LinkButton runat="server" CommandName="Confirmar" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-confirmar">✓ Confirmar</asp:LinkButton>
+                      <asp:LinkButton runat="server" CommandName="Cancelar" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-cancelar">✕ Cancelar</asp:LinkButton>
                     </td>
                   </tr>
                 </ItemTemplate>
@@ -226,18 +204,76 @@
       </asp:UpdatePanel>
     </div>
 
+    <!-- TAB MAPAS -->
+    <div class="tab-content" id="tab-mapas">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Cliente</th><th>Teléfono</th><th>Marca</th>
+            <th>Motor</th><th>Tipo Mapa</th><th>Archivo</th><th>Estado</th><th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <asp:Repeater ID="rptMapas" runat="server">
+            <ItemTemplate>
+              <tr>
+                <td><%# Eval("Id") %></td>
+                <td><%# Eval("Nombre") %></td>
+                <td><%# Eval("Telefono") %></td>
+                <td><%# Eval("Marca") %></td>
+                <td><%# Eval("Motor") %></td>
+                <td><%# Eval("TipoMapa") %></td>
+                <td><span style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#00aaff;"><%# string.IsNullOrEmpty(Eval("ArchivoOriginal").ToString()) ? "Sin archivo" : "✓ Subido" %></span></td>
+                <td><span class="badge badge-<%# Eval("Estado").ToString().ToLower() %>"><%# Eval("Estado") %></span></td>
+                <td><%# ((DateTime)Eval("FechaCreacion")).ToString("dd/MM/yyyy") %></td>
+              </tr>
+            </ItemTemplate>
+          </asp:Repeater>
+        </tbody>
+      </table>
+      <asp:Panel ID="pnlSinMapas" runat="server" Visible="false">
+        <div class="empty-state">// No hay pedidos de mapas todavía</div>
+      </asp:Panel>
+    </div>
+
+    <!-- TAB INSCRIPCIONES -->
+    <div class="tab-content" id="tab-inscripciones">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Alumno</th><th>Teléfono</th><th>Email</th>
+            <th>Curso</th><th>Consulta</th><th>Estado</th><th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <asp:Repeater ID="rptInscripciones" runat="server">
+            <ItemTemplate>
+              <tr>
+                <td><%# Eval("Id") %></td>
+                <td><%# Eval("Nombre") %></td>
+                <td><%# Eval("Telefono") %></td>
+                <td><%# Eval("Email") %></td>
+                <td><%# Eval("Curso") %></td>
+                <td><%# Eval("Consulta") %></td>
+                <td><span class="badge badge-<%# Eval("Estado").ToString().ToLower() %>"><%# Eval("Estado") %></span></td>
+                <td><%# ((DateTime)Eval("FechaCreacion")).ToString("dd/MM/yyyy") %></td>
+              </tr>
+            </ItemTemplate>
+          </asp:Repeater>
+        </tbody>
+      </table>
+      <asp:Panel ID="pnlSinInscripciones" runat="server" Visible="false">
+        <div class="empty-state">// No hay inscripciones todavía</div>
+      </asp:Panel>
+    </div>
+
     <!-- TAB CONSULTAS -->
     <div class="tab-content" id="tab-consultas">
       <table class="admin-table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Email</th>
-            <th>Mensaje</th>
-            <th>Fecha</th>
-            <th>Estado</th>
+            <th>#</th><th>Nombre</th><th>Teléfono</th><th>Email</th>
+            <th>Mensaje</th><th>Fecha</th><th>Estado</th>
           </tr>
         </thead>
         <tbody>
@@ -268,11 +304,11 @@
   </div>
 
   <script>
-    function mostrarTab(nombre, el) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-' + nombre).classList.add('active');
-      el.classList.add('active');
-    }
+      function mostrarTab(nombre, el) {
+          document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.getElementById('tab-' + nombre).classList.add('active');
+          el.classList.add('active');
+      }
   </script>
 </asp:Content>

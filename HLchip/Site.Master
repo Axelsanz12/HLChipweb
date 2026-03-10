@@ -11,22 +11,11 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --black: #050608;
-      --dark: #0a0c10;
-      --card: #0e1118;
-      --line: rgba(255,255,255,0.07);
-      --blue: #00aaff;
-      --red: #ff1e1e;
-      --text: #e8ecf0;
-      --muted: #6b7280;
+      --black: #050608; --dark: #0a0c10; --card: #0e1118;
+      --line: rgba(255,255,255,0.07); --blue: #00aaff;
+      --red: #ff1e1e; --text: #e8ecf0; --muted: #6b7280;
     }
-    body {
-      background: var(--black);
-      color: var(--text);
-      font-family: 'Barlow', sans-serif;
-      overflow-x: hidden;
-    }
-    /* NAV */
+    body { background: var(--black); color: var(--text); font-family: 'Barlow', sans-serif; overflow-x: hidden; }
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
@@ -41,7 +30,7 @@
       color: #fff; text-decoration: none;
     }
     .nav-logo span { color: var(--blue); }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
     .nav-links a {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 600; font-size: 0.88rem;
@@ -50,6 +39,25 @@
       transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--blue); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-admin {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: #00aaff;
+      letter-spacing: 0.08em; text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid rgba(0,170,255,0.3);
+      border-radius: 4px; transition: all 0.2s;
+    }
+    .nav-admin:hover { background: rgba(0,170,255,0.1); }
+    .nav-salir {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: #ff6b6b;
+      letter-spacing: 0.08em; background: none;
+      border: 1px solid rgba(255,30,30,0.3);
+      border-radius: 4px; padding: 6px 12px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .nav-salir:hover { border-color: #ff1e1e; color: #ff1e1e; }
     .nav-cta {
       display: inline-flex; align-items: center; gap: 8px;
       background: #25D366; color: #000;
@@ -60,17 +68,12 @@
       transition: all 0.2s;
     }
     .nav-cta:hover { background: #1fba57; }
-    /* FOOTER */
     footer {
-      background: var(--dark);
-      border-top: 1px solid var(--line);
+      background: var(--dark); border-top: 1px solid var(--line);
       padding: 28px 48px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .footer-brand {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900; font-size: 1.2rem; color: #fff;
-    }
+    .footer-brand { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.2rem; color: #fff; }
     .footer-brand span { color: var(--blue); }
     .footer-links { display: flex; gap: 24px; }
     .footer-links a {
@@ -80,11 +83,7 @@
       letter-spacing: 0.08em; transition: color 0.2s;
     }
     .footer-links a:hover { color: var(--blue); }
-    .footer-copy {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.7rem; color: var(--muted);
-    }
-    /* WA FLOAT */
+    .footer-copy { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--muted); }
     .wa-float {
       position: fixed; bottom: 28px; right: 28px; z-index: 500;
       display: flex; align-items: center; gap: 10px;
@@ -119,34 +118,35 @@
 </head>
 <body>
 
-  <!-- NAV -->
   <nav>
     <a href="/Default.aspx" class="nav-logo">HL<span>chip</span></a>
     <ul class="nav-links">
       <li><a href="/Default.aspx#servicios">Servicios</a></li>
       <li><a href="/Default.aspx#que-es">Chiptuning</a></li>
-      <li><a href="/Default.aspx#curso">Curso</a></li>
-      <li><a href="/Contacto.aspx">Contacto</a></li>
+      <li><a href="/Cursos/Index.aspx">Cursos</a></li>
+      <li><a href="/Mapas/NuevoPedido.aspx">Mapas</a></li>
+      <li><a href="/Turnos.aspx">Turnos</a></li>
+      <li><a href="/Contact.aspx">Contacto</a></li>
     </ul>
-    <a href="https://wa.me/541123177778" target="_blank" class="nav-cta">WhatsApp</a>
+    <div class="nav-right">
+      <asp:HyperLink ID="lnkAdmin" runat="server" NavigateUrl="~/Admin/Panel.aspx" CssClass="nav-admin">&#9881; Panel</asp:HyperLink>
+      <asp:HyperLink ID="lnkSalir" runat="server" NavigateUrl="~/Logout.aspx" CssClass="nav-salir">Salir</asp:HyperLink>
+      <a href="https://wa.me/541123177778" target="_blank" class="nav-cta">WhatsApp</a>
+    </div>
   </nav>
 
-  <!-- CONTENIDO DE CADA PÁGINA -->
-<form id="form1" runat="server">
-  <asp:ScriptManager ID="ScriptManager1" runat="server" />
-  <main>
-    <asp:ContentPlaceHolder ID="MainContent" runat="server" />
-  </main>
-</form>
+  <form id="form1" runat="server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server" />
+    <main>
+      <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+    </main>
+  </form>
 
-
-  <!-- WA FLOTANTE -->
   <a href="https://wa.me/541123177778" target="_blank" class="wa-float">
     💬 Consultar
     <span class="wa-dot"></span>
   </a>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-brand">HL<span>chip</span> Potenciación</div>
     <div class="footer-links">
