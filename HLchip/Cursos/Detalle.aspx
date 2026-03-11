@@ -50,16 +50,13 @@
       font-weight: 800; font-size: 1.1rem;
       color: #fff; text-transform: uppercase;
     }
-    /* TEMARIO */
     .temario-title {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 800; font-size: 1.1rem;
       text-transform: uppercase; margin-bottom: 20px;
       color: #fff; letter-spacing: 0.05em;
     }
-    .temario-list {
-      list-style: none; padding: 0; margin: 0;
-    }
+    .temario-list { list-style: none; padding: 0; margin: 0; }
     .temario-list li {
       padding: 12px 0;
       border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -73,7 +70,6 @@
       font-size: 0.7rem; color: #00aaff;
       flex-shrink: 0; margin-top: 2px;
     }
-    /* FORM INSCRIPCION */
     .inscripcion-form {
       background: #0e1118;
       border: 1px solid rgba(255,255,255,0.07);
@@ -96,14 +92,11 @@
       font-weight: 900; font-size: 3rem;
       line-height: 1; color: #fff;
     }
-    .precio-num span {
-      font-size: 1.5rem; color: #00aaff;
-    }
+    .precio-num span { font-size: 1.5rem; color: #00aaff; }
     .form-title {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 800; font-size: 1.1rem;
-      text-transform: uppercase; margin-bottom: 24px;
-      color: #fff;
+      text-transform: uppercase; margin-bottom: 24px; color: #fff;
     }
     .form-group { margin-bottom: 16px; }
     .form-label {
@@ -118,8 +111,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 6px; padding: 13px 16px;
       color: #e8ecf0; font-family: 'Barlow', sans-serif;
-      font-size: 0.95rem; transition: border-color 0.2s;
-      outline: none;
+      font-size: 0.95rem; transition: border-color 0.2s; outline: none;
     }
     .form-input:focus { border-color: #00aaff; }
     .btn-inscribir {
@@ -132,14 +124,14 @@
       transition: all 0.2s; margin-top: 8px;
     }
     .btn-inscribir:hover { background: #0099ee; transform: translateY(-2px); }
-    .btn-volver {
+    .btn-volver-link {
       display: inline-flex; align-items: center; gap: 8px;
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.72rem; color: #6b7280;
       letter-spacing: 0.08em; text-decoration: none;
       margin-bottom: 32px; transition: color 0.2s;
     }
-    .btn-volver:hover { color: #00aaff; }
+    .btn-volver-link:hover { color: #00aaff; }
     .msg-ok {
       background: rgba(37,211,102,0.1);
       border: 1px solid rgba(37,211,102,0.3);
@@ -153,6 +145,20 @@
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.85rem; color: #6b7280;
     }
+    .datos-banco {
+      background:#050608;
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:8px; padding:20px; margin-bottom:20px;
+    }
+    .banco-label {
+      font-family:'Share Tech Mono',monospace;
+      font-size:0.65rem; color:#6b7280; margin-bottom:4px;
+    }
+    .banco-val { font-size:0.9rem; margin-bottom:12px; }
+    .banco-val-mono {
+      font-family:'Share Tech Mono',monospace;
+      font-size:0.9rem; color:#00aaff; margin-bottom:12px;
+    }
     @media (max-width: 900px) {
       .detalle-section { grid-template-columns: 1fr; padding: 100px 20px 60px; gap: 40px; }
       .inscripcion-form { position: static; }
@@ -165,16 +171,12 @@
   <asp:Panel ID="pnlCurso" runat="server" Visible="false">
     <div class="detalle-section">
 
-      <!-- IZQUIERDA — DETALLE -->
+      <!-- IZQUIERDA -->
       <div>
-        <a href="/Cursos/Index.aspx" class="btn-volver">← Volver a cursos</a>
+        <a href="/Cursos/Index.aspx" class="btn-volver-link">← Volver a cursos</a>
         <div class="section-eyebrow">Curso online</div>
-        <h1 class="curso-title">
-          <asp:Literal ID="litNombre" runat="server" />
-        </h1>
-        <p class="curso-desc">
-          <asp:Literal ID="litDesc" runat="server" />
-        </p>
+        <h1 class="curso-title"><asp:Literal ID="litNombre" runat="server" /></h1>
+        <p class="curso-desc"><asp:Literal ID="litDesc" runat="server" /></p>
         <div class="curso-meta">
           <div class="curso-meta-item">
             <div class="curso-meta-label">Duración</div>
@@ -185,66 +187,116 @@
             <div class="curso-meta-val"><asp:Literal ID="litModalidad" runat="server" /></div>
           </div>
         </div>
-
         <div class="temario-title">// Temario</div>
         <ul class="temario-list">
           <asp:Repeater ID="rptTemario" runat="server">
-            <ItemTemplate>
-              <li><%# Container.DataItem %></li>
-            </ItemTemplate>
+            <ItemTemplate><li><%# Container.DataItem %></li></ItemTemplate>
           </asp:Repeater>
         </ul>
       </div>
 
-      <!-- DERECHA — INSCRIPCION -->
+      <!-- DERECHA -->
       <div class="inscripcion-form">
         <div class="precio-display">
           <div class="precio-label">Inversión total</div>
-          <div class="precio-num">
-            <span>$</span><asp:Literal ID="litPrecio" runat="server" />
+          <div class="precio-num"><span>$</span><asp:Literal ID="litPrecio" runat="server" /></div>
+        </div>
+
+        <!-- FORM PRINCIPAL -->
+        <asp:Panel ID="pnlFormInscripcion" runat="server">
+          <div class="form-title">// Quiero inscribirme</div>
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <asp:TextBox ID="txtNombre" runat="server" CssClass="form-input" placeholder="Tu nombre" />
           </div>
-        </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp</label>
+            <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-input" placeholder="11-XXXXXXXX" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-input" placeholder="tu@email.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Consulta (opcional)</label>
+            <asp:TextBox ID="txtConsulta" runat="server" CssClass="form-input" 
+                placeholder="¿Tenés alguna pregunta?" TextMode="MultiLine" Style="height:70px;resize:vertical;" />
+          </div>
+          <asp:HiddenField ID="hfIdCurso"    runat="server" />
+          <asp:HiddenField ID="hfMetodoPago" runat="server" Value="transferencia" />
+          <div class="form-group" style="margin-top:8px;">
+            <label class="form-label">Método de pago</label>
+            <div style="display:flex;gap:12px;margin-top:4px;">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;color:#e8ecf0;">
+                <input type="radio" name="metodoPago" value="transferencia" checked
+                    style="accent-color:#00aaff;" onchange="mostrarMetodo('transferencia')" />
+                Transferencia
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;color:#e8ecf0;">
+                <input type="radio" name="metodoPago" value="mercadopago"
+                    style="accent-color:#00aaff;" onchange="mostrarMetodo('mercadopago')" />
+                MercadoPago
+              </label>
+            </div>
+          </div>
+          <asp:Button ID="btnInscribir" runat="server" Text="CONTINUAR →" 
+              CssClass="btn-inscribir" OnClick="btnInscribir_Click" />
+        </asp:Panel>
 
-        <div class="form-title">// Quiero inscribirme</div>
+        <!-- TRANSFERENCIA -->
+        <asp:Panel ID="pnlTransferencia" runat="server" Visible="false">
+          <div class="form-title">// Datos para transferencia</div>
+          <div class="datos-banco">
+            <div class="banco-label">BANCO</div>
+            <div class="banco-val">Banco Galicia</div>
+            <div class="banco-label">TITULAR</div>
+            <div class="banco-val">Lucas Haureguy</div>
+            <div class="banco-label">CBU</div>
+            <div class="banco-val-mono">0000000000000000000000</div>
+            <div class="banco-label">ALIAS</div>
+            <div class="banco-val-mono" style="margin-bottom:0;">HLCHIP.CURSOS</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subí el comprobante</label>
+            <asp:FileUpload ID="fuComprobante" runat="server" 
+                style="width:100%;padding:10px;background:#050608;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#e8ecf0;font-size:0.85rem;" />
+          </div>
+          <asp:Button ID="btnEnviarTransferencia" runat="server" Text="ENVIAR COMPROBANTE" 
+              CssClass="btn-inscribir" OnClick="btnEnviarTransferencia_Click" />
+        </asp:Panel>
 
-        <div class="form-group">
-          <label class="form-label">Nombre</label>
-          <asp:TextBox ID="txtNombre" runat="server" CssClass="form-input" placeholder="Tu nombre" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">WhatsApp</label>
-          <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-input" placeholder="11-XXXXXXXX" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <asp:TextBox ID="txtEmail" runat="server" CssClass="form-input" placeholder="tu@email.com" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Consulta (opcional)</label>
-          <asp:TextBox ID="txtConsulta" runat="server" CssClass="form-input" 
-              placeholder="¿Tenés alguna pregunta?" TextMode="MultiLine"
-              Style="height:70px; resize:vertical;" />
-        </div>
+        <!-- MERCADOPAGO -->
+        <asp:Panel ID="pnlMercadoPago" runat="server" Visible="false">
+          <div class="form-title">// Pagar con MercadoPago</div>
+          <div style="background:#050608;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:20px;margin-bottom:20px;font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:#6b7280;text-align:center;">
+            // Próximamente disponible
+          </div>
+          <asp:Button ID="btnVolver" runat="server" Text="← VOLVER" 
+              CssClass="btn-inscribir" OnClick="btnVolver_Click"
+              style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:#e8ecf0;" />
+        </asp:Panel>
 
-        <asp:HiddenField ID="hfIdCurso" runat="server" />
-
-        <asp:Button ID="btnInscribir" runat="server" Text="QUIERO INSCRIBIRME" 
-            CssClass="btn-inscribir" OnClick="btnInscribir_Click" />
-
+        <!-- OK -->
         <asp:Panel ID="pnlOk" runat="server" Visible="false">
           <div class="msg-ok">
-            ✓ ¡Solicitud recibida!<br>
-            Te contactamos por WhatsApp a la brevedad para coordinar el pago y el acceso.<br><br>
-            <strong>11-23177778</strong>
+            ✓ ¡Comprobante recibido!<br>
+            Estamos verificando tu pago. En breve recibirás un email con tus credenciales de acceso al campus.<br><br>
+            <strong>¿Dudas? WhatsApp: 11-23177778</strong>
           </div>
         </asp:Panel>
-      </div>
 
+      </div>
     </div>
   </asp:Panel>
 
   <asp:Panel ID="pnlNotFound" runat="server" Visible="false">
     <div class="not-found">// Curso no encontrado</div>
   </asp:Panel>
+
+  <script>
+    function mostrarMetodo(metodo) {
+      document.getElementById('<%= hfMetodoPago.ClientID %>').value = metodo;
+      }
+  </script>
 
 </asp:Content>

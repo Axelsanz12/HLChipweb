@@ -17,7 +17,14 @@ namespace HLchip.Admin
             litUser.Text = Session["AdminUser"].ToString();
 
             if (!IsPostBack)
+            {
+                if (Request.QueryString["tab"] == "campus")
+                    ScriptManager.RegisterStartupScript(this, GetType(), "tab",
+                        "sessionStorage.setItem('tabActivo','campus');", true);
+
                 CargarDatos();
+                CargarCursosCampus();
+            }
         }
 
         private void CargarDatos()
@@ -28,14 +35,12 @@ namespace HLchip.Admin
             {
                 conn.Open();
 
-                // Stats turnos
                 SqlCommand cmdStats = new SqlCommand(@"
                     SELECT 
                         COUNT(*) AS Total,
                         SUM(CASE WHEN Estado = 'Pendiente' THEN 1 ELSE 0 END) AS Pendientes,
                         SUM(CASE WHEN Estado = 'Confirmado' THEN 1 ELSE 0 END) AS Confirmados
                     FROM Turnos", conn);
-
                 SqlDataReader drStats = cmdStats.ExecuteReader();
                 if (drStats.Read())
                 {
@@ -45,78 +50,51 @@ namespace HLchip.Admin
                 }
                 drStats.Close();
 
-                // Stats consultas nuevas
                 SqlCommand cmdConsultas = new SqlCommand(
                     "SELECT COUNT(*) FROM Consultas WHERE Leida = 0", conn);
                 litConsultas.Text = cmdConsultas.ExecuteScalar().ToString();
 
-                // Cargar turnos
+                // Turnos
                 SqlDataAdapter daTurnos = new SqlDataAdapter(@"
                     SELECT t.Id, t.Nombre, t.Telefono, t.FechaTurno, t.HoraTurno,
                            tt.Nombre AS Servicio, t.Vehiculo, t.Estado
                     FROM Turnos t
                     INNER JOIN TiposTrabajo tt ON t.IdTipoTrabajo = tt.Id
                     ORDER BY t.FechaTurno ASC, t.HoraTurno ASC", conn);
-
                 DataTable dtTurnos = new DataTable();
                 daTurnos.Fill(dtTurnos);
+                if (dtTurnos.Rows.Count > 0) { rptTurnos.DataSource = dtTurnos; rptTurnos.DataBind(); }
+                else pnlSinTurnos.Visible = true;
 
-                if (dtTurnos.Rows.Count > 0)
-                {
-                    rptTurnos.DataSource = dtTurnos;
-                    rptTurnos.DataBind();
-                }
-                else
-                {
-                    pnlSinTurnos.Visible = true;
-                }
-
-                // Cargar pedidos de mapas
+                // Mapas
                 SqlDataAdapter daMapas = new SqlDataAdapter(@"
-                    SELECT p.Id, p.Nombre, p.Telefono, 
+                    SELECT p.Id, p.Nombre, p.Telefono,
                            ISNULL(m.Nombre, 'No especificada') AS Marca,
-                           p.Motor, p.TipoMapa, p.ArchivoOriginal,
-                           p.Estado, p.FechaCreacion
+                           p.Motor, p.TipoMapa, p.ArchivoOriginal, p.Estado, p.FechaCreacion
                     FROM PedidosMapas p
                     LEFT JOIN Marcas m ON p.IdMarca = m.Id
                     ORDER BY p.FechaCreacion DESC", conn);
-
                 DataTable dtMapas = new DataTable();
                 daMapas.Fill(dtMapas);
+                if (dtMapas.Rows.Count > 0) { rptMapas.DataSource = dtMapas; rptMapas.DataBind(); }
+                else pnlSinMapas.Visible = true;
 
-                if (dtMapas.Rows.Count > 0)
-                {
-                    rptMapas.DataSource = dtMapas;
-                    rptMapas.DataBind();
-                }
-                else
-                {
-                    pnlSinMapas.Visible = true;
-                }
-
-                // Cargar inscripciones online
+                // Inscripciones — incluye IdCurso, MetodoPago, ComprobanteTransferencia
                 SqlDataAdapter daInscripciones = new SqlDataAdapter(@"
                     SELECT i.Id, i.Nombre, i.Telefono, i.Email,
-                           c.Nombre AS Curso, i.Consulta,
-                           i.Estado, i.FechaCreacion
+                           i.IdCurso, c.Nombre AS Curso, i.Consulta,
+                           i.Estado, i.MetodoPago, 
+                           ISNULL(i.ComprobanteTransferencia, '') AS ComprobanteTransferencia,
+                           i.FechaCreacion
                     FROM Inscripciones i
                     INNER JOIN Cursos c ON i.IdCurso = c.Id
                     ORDER BY i.FechaCreacion DESC", conn);
-
                 DataTable dtInscripciones = new DataTable();
                 daInscripciones.Fill(dtInscripciones);
+                if (dtInscripciones.Rows.Count > 0) { rptInscripciones.DataSource = dtInscripciones; rptInscripciones.DataBind(); }
+                else pnlSinInscripciones.Visible = true;
 
-                if (dtInscripciones.Rows.Count > 0)
-                {
-                    rptInscripciones.DataSource = dtInscripciones;
-                    rptInscripciones.DataBind();
-                }
-                else
-                {
-                    pnlSinInscripciones.Visible = true;
-                }
-
-                // Cargar inscripciones presenciales
+                // Presenciales
                 SqlDataAdapter daPresenciales = new SqlDataAdapter(@"
                     SELECT i.Id, i.Nombre, i.Telefono, i.Email,
                            c.Nombre AS Taller, c.Fecha AS FechaTaller,
@@ -124,38 +102,265 @@ namespace HLchip.Admin
                     FROM InscripcionesPresenciales i
                     INNER JOIN CursosPresenciales c ON i.IdCurso = c.Id
                     ORDER BY i.FechaCreacion DESC", conn);
-
                 DataTable dtPresenciales = new DataTable();
                 daPresenciales.Fill(dtPresenciales);
+                if (dtPresenciales.Rows.Count > 0) { rptPresenciales.DataSource = dtPresenciales; rptPresenciales.DataBind(); }
+                else pnlSinPresenciales.Visible = true;
 
-                if (dtPresenciales.Rows.Count > 0)
-                {
-                    rptPresenciales.DataSource = dtPresenciales;
-                    rptPresenciales.DataBind();
-                }
-                else
-                {
-                    pnlSinPresenciales.Visible = true;
-                }
-
-                // Cargar consultas
+                // Consultas
                 SqlDataAdapter daConsultas = new SqlDataAdapter(
                     "SELECT * FROM Consultas ORDER BY Fecha DESC", conn);
-
                 DataTable dtConsultas = new DataTable();
                 daConsultas.Fill(dtConsultas);
+                if (dtConsultas.Rows.Count > 0) { rptConsultas.DataSource = dtConsultas; rptConsultas.DataBind(); }
+                else pnlSinConsultas.Visible = true;
+            }
+        }
 
-                if (dtConsultas.Rows.Count > 0)
+        // ─── INSCRIPCIONES — CONFIRMAR PAGO ──────────────────
+
+        protected void rptInscripciones_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName != "ConfirmarPago") return;
+
+            string[] args = e.CommandArgument.ToString().Split('|');
+            int id = int.Parse(args[0]);
+            int idCurso = int.Parse(args[1]);
+            string nombre = args[2];
+            string email = args[3];
+
+            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(
+                    "UPDATE Inscripciones SET Estado = 'Confirmado' WHERE Id = @Id", conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.ExecuteNonQuery();
+            }
+
+            // Crear acceso campus y enviar email
+            var detalle = new HLchip.Cursos.Detalle();
+            detalle.HabilitarAccesoCampus(idCurso, nombre, email);
+
+            CargarDatos();
+        }
+
+        // ─── CAMPUS ───────────────────────────────────────────
+
+        private void CargarCursosCampus()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlDataAdapter da = new SqlDataAdapter(
+                    "SELECT Id, Nombre FROM Cursos WHERE Activo = 1 ORDER BY Nombre", conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                ddlCursosCampus.DataSource = dt;
+                ddlCursosCampus.DataTextField = "Nombre";
+                ddlCursosCampus.DataValueField = "Id";
+                ddlCursosCampus.DataBind();
+                ddlCursosCampus.Items.Insert(0, new ListItem("-- Seleccionar curso --", "0"));
+            }
+            CargarLeccionesCampus();
+            CargarForoAdmin();
+        }
+
+        private void CargarLeccionesCampus()
+        {
+            int idCurso = int.Parse(ddlCursosCampus.SelectedValue);
+            if (idCurso == 0) { pnlSinLecciones.Visible = true; return; }
+
+            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlDataAdapter da = new SqlDataAdapter(
+                    "SELECT Id, Titulo, UrlVideo, Orden, Activo FROM Lecciones WHERE IdCurso = @IdCurso ORDER BY Orden", conn);
+                da.SelectCommand.Parameters.AddWithValue("@IdCurso", idCurso);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                if (dt.Rows.Count > 0) { rptLecciones.DataSource = dt; rptLecciones.DataBind(); pnlSinLecciones.Visible = false; }
+                else pnlSinLecciones.Visible = true;
+            }
+        }
+
+        private void CargarForoAdmin()
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlDataAdapter da = new SqlDataAdapter(@"
+                    SELECT fp.Id, fp.Pregunta, fp.Fecha,
+                           ac.Nombre AS NombreAlumno, c.Nombre AS Curso,
+                           CASE WHEN EXISTS (
+                               SELECT 1 FROM ForoRespuestas WHERE IdPregunta = fp.Id AND EsAdmin = 1
+                           ) THEN 1 ELSE 0 END AS Respondida
+                    FROM ForoPreguntas fp
+                    INNER JOIN AlumnosCampus ac ON fp.IdAlumno = ac.Id
+                    INNER JOIN Cursos c ON fp.IdCurso = c.Id
+                    ORDER BY fp.Fecha DESC", conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
                 {
-                    rptConsultas.DataSource = dtConsultas;
-                    rptConsultas.DataBind();
+                    rptForoAdmin.DataSource = dt;
+                    rptForoAdmin.DataBind();
+
+                    for (int i = 0; i < rptForoAdmin.Items.Count; i++)
+                    {
+                        RepeaterItem item = rptForoAdmin.Items[i];
+                        int idPregunta = int.Parse(dt.Rows[i]["Id"].ToString());
+                        Repeater rptResp = (Repeater)item.FindControl("rptRespuestasAdmin");
+                        if (rptResp == null) continue;
+
+                        using (SqlConnection conn2 = new SqlConnection(connStr))
+                        {
+                            SqlDataAdapter daR = new SqlDataAdapter(
+                                "SELECT Respuesta, EsAdmin, Fecha FROM ForoRespuestas WHERE IdPregunta = @Id ORDER BY Fecha", conn2);
+                            daR.SelectCommand.Parameters.AddWithValue("@Id", idPregunta);
+                            DataTable dtR = new DataTable();
+                            daR.Fill(dtR);
+                            rptResp.DataSource = dtR;
+                            rptResp.DataBind();
+                        }
+                    }
                 }
                 else
                 {
-                    pnlSinConsultas.Visible = true;
+                    pnlSinPreguntas.Visible = true;
                 }
             }
         }
+
+        protected void ddlCursosCampus_Changed(object sender, EventArgs e)
+        {
+            pnlFormLeccion.Visible = false;
+            CargarLeccionesCampus();
+        }
+
+        protected void btnNuevaLeccion_Click(object sender, EventArgs e)
+        {
+            hfIdLeccion.Value = "0";
+            litFormLeccionTitulo.Text = "Nueva Lección";
+            txtLeccionTitulo.Text = "";
+            txtLeccionUrl.Text = "";
+            txtLeccionDesc.Text = "";
+            txtLeccionOrden.Text = "1";
+            pnlFormLeccion.Visible = true;
+        }
+
+        protected void btnGuardarLeccion_Click(object sender, EventArgs e)
+        {
+            int idCurso = int.Parse(ddlCursosCampus.SelectedValue);
+            if (idCurso == 0) return;
+
+            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                int idLeccion = int.Parse(hfIdLeccion.Value);
+
+                if (idLeccion == 0)
+                {
+                    SqlCommand cmd = new SqlCommand(@"
+                        INSERT INTO Lecciones (IdCurso, Titulo, Descripcion, UrlVideo, Orden, Activo)
+                        VALUES (@IdCurso, @Titulo, @Desc, @Url, @Orden, 1)", conn);
+                    cmd.Parameters.AddWithValue("@IdCurso", idCurso);
+                    cmd.Parameters.AddWithValue("@Titulo", txtLeccionTitulo.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Desc", txtLeccionDesc.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Url", txtLeccionUrl.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Orden", int.Parse(txtLeccionOrden.Text.Trim()));
+                    cmd.ExecuteNonQuery();
+                }
+                else
+                {
+                    SqlCommand cmd = new SqlCommand(@"
+                        UPDATE Lecciones SET Titulo=@Titulo, Descripcion=@Desc,
+                               UrlVideo=@Url, Orden=@Orden WHERE Id=@Id", conn);
+                    cmd.Parameters.AddWithValue("@Titulo", txtLeccionTitulo.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Desc", txtLeccionDesc.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Url", txtLeccionUrl.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Orden", int.Parse(txtLeccionOrden.Text.Trim()));
+                    cmd.Parameters.AddWithValue("@Id", idLeccion);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            pnlFormLeccion.Visible = false;
+            CargarLeccionesCampus();
+        }
+
+        protected void btnCancelarLeccion_Click(object sender, EventArgs e)
+        {
+            pnlFormLeccion.Visible = false;
+        }
+
+        protected void rptLecciones_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            int id = int.Parse(e.CommandArgument.ToString());
+            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
+
+            if (e.CommandName == "EliminarLeccion")
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    SqlCommand cmd = new SqlCommand("DELETE FROM Lecciones WHERE Id = @Id", conn);
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                CargarLeccionesCampus();
+            }
+            else if (e.CommandName == "EditarLeccion")
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT * FROM Lecciones WHERE Id = @Id", conn);
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    conn.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        hfIdLeccion.Value = id.ToString();
+                        litFormLeccionTitulo.Text = "Editar Lección";
+                        txtLeccionTitulo.Text = dr["Titulo"].ToString();
+                        txtLeccionUrl.Text = dr["UrlVideo"].ToString();
+                        txtLeccionDesc.Text = dr["Descripcion"].ToString();
+                        txtLeccionOrden.Text = dr["Orden"].ToString();
+                        pnlFormLeccion.Visible = true;
+                    }
+                }
+            }
+        }
+
+        protected void rptForoAdmin_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName != "Responder") return;
+
+            int idPregunta = int.Parse(e.CommandArgument.ToString());
+            RepeaterItem item = (RepeaterItem)((Control)e.CommandSource).NamingContainer;
+            TextBox txtResp = (TextBox)item.FindControl("txtRespuesta");
+            string respuesta = txtResp?.Text.Trim() ?? "";
+            if (string.IsNullOrWhiteSpace(respuesta)) return;
+
+            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                SqlCommand cmd = new SqlCommand(@"
+                    INSERT INTO ForoRespuestas (IdPregunta, Respuesta, EsAdmin, Fecha)
+                    VALUES (@IdPregunta, @Respuesta, 1, GETDATE())", conn);
+                cmd.Parameters.AddWithValue("@IdPregunta", idPregunta);
+                cmd.Parameters.AddWithValue("@Respuesta", respuesta);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+
+            CargarForoAdmin();
+        }
+
+        // ─── TURNOS ───────────────────────────────────────────
 
         protected void rptTurnos_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -163,7 +368,6 @@ namespace HLchip.Admin
             string estado = e.CommandName == "Confirmar" ? "Confirmado" : "Cancelado";
 
             string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
-
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 SqlCommand cmd = new SqlCommand(

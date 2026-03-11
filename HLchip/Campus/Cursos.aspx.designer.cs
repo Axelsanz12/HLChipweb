@@ -7,92 +7,110 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace HLchip
+namespace HLchip.Campus
 {
 
 
-    public partial class SiteMaster
+    public partial class Curso
     {
 
         /// <summary>
-        /// Control HeadContent.
+        /// Control litTitulo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeadContent;
+        protected global::System.Web.UI.WebControls.Literal litTitulo;
 
         /// <summary>
-        /// Control lnkAdmin.
+        /// Control litVideo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkAdmin;
+        protected global::System.Web.UI.WebControls.Literal litVideo;
 
         /// <summary>
-        /// Control lnkCampusAdmin.
+        /// Control litLeccionTitulo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkCampusAdmin;
+        protected global::System.Web.UI.WebControls.Literal litLeccionTitulo;
 
         /// <summary>
-        /// Control lnkCampusAlumno.
+        /// Control litLeccionDesc.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkCampusAlumno;
+        protected global::System.Web.UI.WebControls.Literal litLeccionDesc;
 
         /// <summary>
-        /// Control lnkSalir.
+        /// Control btnCompletar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkSalir;
+        protected global::System.Web.UI.WebControls.Button btnCompletar;
 
         /// <summary>
-        /// Control lnkSalirAlumno.
+        /// Control rptForo.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkSalirAlumno;
+        protected global::System.Web.UI.WebControls.Repeater rptForo;
 
         /// <summary>
-        /// Control form1.
+        /// Control txtPregunta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.TextBox txtPregunta;
 
         /// <summary>
-        /// Control ScriptManager1.
+        /// Control btnPreguntar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager1;
+        protected global::System.Web.UI.WebControls.Button btnPreguntar;
 
         /// <summary>
-        /// Control MainContent.
+        /// Control rptLecciones.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        protected global::System.Web.UI.WebControls.Repeater rptLecciones;
+
+        /// <summary>
+        /// Control rptArchivos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptArchivos;
+
+        /// <summary>
+        /// Control pnlSinArchivos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlSinArchivos;
     }
 }

@@ -103,6 +103,7 @@
       <button type="button" class="tab" onclick="mostrarTab('inscripciones', this)">Cursos Online</button>
       <button type="button" class="tab" onclick="mostrarTab('presenciales', this)">Talleres</button>
       <button type="button" class="tab" onclick="mostrarTab('consultas', this)">Consultas</button>
+      <button type="button" class="tab" onclick="mostrarTab('campus', this)">Campus</button>
     </div>
 
     <!-- TAB TURNOS -->
@@ -182,11 +183,11 @@
         <thead>
           <tr>
             <th>#</th><th>Alumno</th><th>Teléfono</th><th>Email</th>
-            <th>Curso</th><th>Consulta</th><th>Estado</th><th>Fecha</th>
+            <th>Curso</th><th>Método</th><th>Comprobante</th><th>Estado</th><th>Fecha</th><th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <asp:Repeater ID="rptInscripciones" runat="server">
+          <asp:Repeater ID="rptInscripciones" runat="server" OnItemCommand="rptInscripciones_ItemCommand">
             <ItemTemplate>
               <tr>
                 <td><%# Eval("Id") %></td>
@@ -194,9 +195,22 @@
                 <td><%# Eval("Telefono") %></td>
                 <td><%# Eval("Email") %></td>
                 <td><%# Eval("Curso") %></td>
-                <td><%# Eval("Consulta") %></td>
+                <td><%# Eval("MetodoPago") %></td>
+                <td>
+                  <asp:HyperLink runat="server"
+                      NavigateUrl='<%# "/Uploads/Comprobantes/" + Eval("ComprobanteTransferencia") %>'
+                      Target="_blank"
+                      Visible='<%# !string.IsNullOrEmpty(Eval("ComprobanteTransferencia").ToString()) %>'
+                      style="color:#00aaff;font-size:0.8rem;">Ver comprobante</asp:HyperLink>
+                </td>
                 <td><span class="badge badge-<%# Eval("Estado").ToString().ToLower() %>"><%# Eval("Estado") %></span></td>
                 <td><%# ((DateTime)Eval("FechaCreacion")).ToString("dd/MM/yyyy") %></td>
+                <td>
+                  <asp:LinkButton runat="server" CommandName="ConfirmarPago"
+                      CommandArgument='<%# Eval("Id") + "|" + Eval("IdCurso") + "|" + Eval("Nombre") + "|" + Eval("Email") %>'
+                      CssClass="btn-accion btn-confirmar"
+                      Visible='<%# Eval("Estado").ToString() == "Pendiente" %>'>✓ Confirmar Pago</asp:LinkButton>
+                </td>
               </tr>
             </ItemTemplate>
           </asp:Repeater>
@@ -273,14 +287,145 @@
       </asp:Panel>
     </div>
 
+    <!-- TAB CAMPUS -->
+    <div class="tab-content" id="tab-campus">
+
+      <div style="margin-bottom:24px;display:flex;gap:12px;align-items:center;">
+        <asp:DropDownList ID="ddlCursosCampus" runat="server" CssClass="form-select"
+            AutoPostBack="true" OnSelectedIndexChanged="ddlCursosCampus_Changed"
+            style="background:#0e1118;border:1px solid rgba(255,255,255,0.08);color:#e8ecf0;padding:10px 14px;border-radius:6px;font-size:0.85rem;" />
+      </div>
+
+      <!-- LECCIONES -->
+      <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:24px;">
+        <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;">📚 Lecciones</span>
+          <asp:Button ID="btnNuevaLeccion" runat="server" Text="+ NUEVA LECCIÓN" CssClass="btn-accion btn-confirmar" OnClick="btnNuevaLeccion_Click" />
+        </div>
+        <table class="admin-table">
+          <thead>
+            <tr><th>#</th><th>Título</th><th>URL Video</th><th>Orden</th><th>Activo</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <asp:Repeater ID="rptLecciones" runat="server" OnItemCommand="rptLecciones_ItemCommand">
+              <ItemTemplate>
+                <tr>
+                  <td><%# Eval("Id") %></td>
+                  <td><%# Eval("Titulo") %></td>
+                  <td style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#00aaff;"><%# Eval("UrlVideo") %></td>
+                  <td><%# Eval("Orden") %></td>
+                  <td><span class="badge <%# (bool)Eval("Activo") ? "badge-confirmado" : "badge-cancelado" %>"><%# (bool)Eval("Activo") ? "Sí" : "No" %></span></td>
+                  <td>
+                    <asp:LinkButton runat="server" CommandName="EditarLeccion" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-confirmar">✎ Editar</asp:LinkButton>
+                    <asp:LinkButton runat="server" CommandName="EliminarLeccion" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-cancelar">✕ Eliminar</asp:LinkButton>
+                  </td>
+                </tr>
+              </ItemTemplate>
+            </asp:Repeater>
+          </tbody>
+        </table>
+        <asp:Panel ID="pnlSinLecciones" runat="server" Visible="false">
+          <div class="empty-state">// No hay lecciones cargadas todavía</div>
+        </asp:Panel>
+      </div>
+
+      <!-- FORM LECCION -->
+      <asp:Panel ID="pnlFormLeccion" runat="server" Visible="false"
+          style="background:#0e1118;border:1px solid rgba(0,170,255,0.2);border-radius:10px;padding:24px;margin-bottom:24px;">
+        <asp:HiddenField ID="hfIdLeccion" runat="server" Value="0" />
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;color:#00aaff;">
+          <asp:Literal ID="litFormLeccionTitulo" runat="server">Nueva Lección</asp:Literal>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">TÍTULO</label>
+            <asp:TextBox ID="txtLeccionTitulo" runat="server" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
+          </div>
+          <div>
+            <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">URL VIDEO (YouTube/Vimeo)</label>
+            <asp:TextBox ID="txtLeccionUrl" runat="server" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
+          </div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">DESCRIPCIÓN</label>
+          <asp:TextBox ID="txtLeccionDesc" runat="server" TextMode="MultiLine" Rows="3" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;resize:none;" />
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">ORDEN</label>
+          <asp:TextBox ID="txtLeccionOrden" runat="server" Text="1" style="width:100px;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
+        </div>
+        <asp:Button ID="btnGuardarLeccion" runat="server" Text="GUARDAR LECCIÓN" CssClass="btn-accion btn-confirmar" OnClick="btnGuardarLeccion_Click" style="padding:10px 24px;" />
+        <asp:Button ID="btnCancelarLeccion" runat="server" Text="CANCELAR" CssClass="btn-accion btn-cancelar" OnClick="btnCancelarLeccion_Click" style="padding:10px 24px;" />
+      </asp:Panel>
+
+      <!-- FORO ADMIN -->
+      <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
+        <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;">💬 Foro — Preguntas sin responder</span>
+        </div>
+        <asp:Repeater ID="rptForoAdmin" runat="server" OnItemCommand="rptForoAdmin_ItemCommand">
+          <ItemTemplate>
+            <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.04);<%# (int)Eval("Respondida") == 1 ? "opacity:0.6;" : "" %>">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                <span class="badge <%# (int)Eval("Respondida") == 1 ? "badge-confirmado" : "badge-pendiente" %>">
+                  <%# (int)Eval("Respondida") == 1 ? "Respondida" : "Sin responder" %>
+                </span>
+                <span style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:#6b7280;">
+                  <%# Eval("NombreAlumno") %> · <%# Eval("Curso") %> · <%# Eval("Fecha", "{0:dd/MM/yyyy HH:mm}") %>
+                </span>
+              </div>
+              <div style="font-size:0.88rem;margin-bottom:12px;padding:10px 14px;background:rgba(255,255,255,0.03);border-radius:6px;">
+                <%# Eval("Pregunta") %>
+              </div>
+              <asp:Repeater ID="rptRespuestasAdmin" runat="server">
+                <ItemTemplate>
+                  <div style="padding:8px 14px;margin-bottom:6px;border-radius:6px;
+                       background:<%# (bool)Eval("EsAdmin") ? "rgba(0,170,255,0.08)" : "rgba(255,255,255,0.03)" %>;
+                       border-left:2px solid <%# (bool)Eval("EsAdmin") ? "#00aaff" : "rgba(255,255,255,0.1)" %>;">
+                    <span style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;
+                          color:<%# (bool)Eval("EsAdmin") ? "#00aaff" : "#6b7280" %>;">
+                      <%# (bool)Eval("EsAdmin") ? "HLChip Admin" : "Alumno" %> · <%# Eval("Fecha", "{0:dd/MM HH:mm}") %>
+                    </span>
+                    <div style="font-size:0.85rem;margin-top:4px;"><%# Eval("Respuesta") %></div>
+                  </div>
+                </ItemTemplate>
+              </asp:Repeater>
+              <div style="display:flex;gap:8px;margin-top:10px;">
+                <asp:TextBox ID="txtRespuesta" runat="server" placeholder="Escribí tu respuesta..."
+                    style="flex:1;padding:8px 12px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.82rem;" />
+                <asp:LinkButton runat="server" CommandName="Responder" CommandArgument='<%# Eval("Id") %>'
+                    CssClass="btn-accion btn-confirmar" style="padding:8px 16px;">✓ Responder</asp:LinkButton>
+              </div>
+            </div>
+          </ItemTemplate>
+        </asp:Repeater>
+        <asp:Panel ID="pnlSinPreguntas" runat="server" Visible="false">
+          <div class="empty-state">// No hay preguntas sin responder</div>
+        </asp:Panel>
+      </div>
+
+    </div>
   </div>
 
   <script>
-      function mostrarTab(nombre, el) {
-          document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  
+          function mostrarTab(nombre, el) {
+              document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
           document.getElementById('tab-' + nombre).classList.add('active');
           el.classList.add('active');
-      }
+          sessionStorage.setItem('tabActivo', nombre);
+  }
+
+          window.onload = function () {
+    // Primero chequear querystring
+    var params = new URLSearchParams(window.location.search);
+          var tab = params.get('tab') || sessionStorage.getItem('tabActivo');
+          if (tab) {
+      var el = document.querySelector('.tab[onclick*="' + tab + '"]');
+          if (el) mostrarTab(tab, el);
+    }
+  };
+
   </script>
 </asp:Content>
