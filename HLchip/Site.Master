@@ -123,7 +123,8 @@
     <ul class="nav-links">
       <li><a href="/Default.aspx#servicios">Servicios</a></li>
       <li><a href="/Default.aspx#que-es">Chiptuning</a></li>
-      <li><a href="/Cursos/Index.aspx">Cursos</a></li>
+      <li><a href="/Cursos/Index.aspx">Cursos online</a></li>
+        <li><a href="/Cursos/Presenciales.aspx">Curso presencial /talleres </a></li>
       <li><a href="/Mapas/NuevoPedido.aspx">Mapas</a></li>
       <li><a href="/Turnos.aspx">Turnos</a></li>
       <li><a href="/Contact.aspx">Contacto</a></li>

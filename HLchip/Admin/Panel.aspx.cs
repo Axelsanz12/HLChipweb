@@ -94,7 +94,7 @@ namespace HLchip.Admin
                     pnlSinMapas.Visible = true;
                 }
 
-                // Cargar inscripciones
+                // Cargar inscripciones online
                 SqlDataAdapter daInscripciones = new SqlDataAdapter(@"
                     SELECT i.Id, i.Nombre, i.Telefono, i.Email,
                            c.Nombre AS Curso, i.Consulta,
@@ -114,6 +114,28 @@ namespace HLchip.Admin
                 else
                 {
                     pnlSinInscripciones.Visible = true;
+                }
+
+                // Cargar inscripciones presenciales
+                SqlDataAdapter daPresenciales = new SqlDataAdapter(@"
+                    SELECT i.Id, i.Nombre, i.Telefono, i.Email,
+                           c.Nombre AS Taller, c.Fecha AS FechaTaller,
+                           i.Consulta, i.Estado, i.FechaCreacion
+                    FROM InscripcionesPresenciales i
+                    INNER JOIN CursosPresenciales c ON i.IdCurso = c.Id
+                    ORDER BY i.FechaCreacion DESC", conn);
+
+                DataTable dtPresenciales = new DataTable();
+                daPresenciales.Fill(dtPresenciales);
+
+                if (dtPresenciales.Rows.Count > 0)
+                {
+                    rptPresenciales.DataSource = dtPresenciales;
+                    rptPresenciales.DataBind();
+                }
+                else
+                {
+                    pnlSinPresenciales.Visible = true;
                 }
 
                 // Cargar consultas

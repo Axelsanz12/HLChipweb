@@ -132,6 +132,24 @@ namespace HLchip.Admin
         protected global::System.Web.UI.WebControls.Panel pnlSinInscripciones;
 
         /// <summary>
+        /// Control rptPresenciales.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptPresenciales;
+
+        /// <summary>
+        /// Control pnlSinPresenciales.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlSinPresenciales;
+
+        /// <summary>
         /// Control rptConsultas.
         /// </summary>
         /// <remarks>
