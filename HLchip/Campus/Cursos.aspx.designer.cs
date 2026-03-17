@@ -60,33 +60,6 @@ namespace HLchip.Campus
         protected global::System.Web.UI.WebControls.Button btnCompletar;
 
         /// <summary>
-        /// Control rptForo.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptForo;
-
-        /// <summary>
-        /// Control txtPregunta.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPregunta;
-
-        /// <summary>
-        /// Control btnPreguntar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPreguntar;
-
-        /// <summary>
         /// Control rptLecciones.
         /// </summary>
         /// <remarks>

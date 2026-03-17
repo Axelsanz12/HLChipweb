@@ -1,9 +1,9 @@
-﻿<%@ Page Title="Curso" Language="C#" MasterPageFile="~/Site.Master" 
+﻿<%@ Page Title="Curso" Language="C#" MasterPageFile="~/Campus/Campus.Master"
     AutoEventWireup="true" CodeBehind="Curso.aspx.cs" Inherits="HLchip.Campus.Curso" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
   <style>
-    .curso-section { min-height: 100vh; padding: 90px 48px 80px; }
+    .curso-section { min-height: 100vh; padding: 90px 48px 80px; position: relative; z-index: 1; }
     .curso-header {
       margin-bottom: 40px; padding-bottom: 24px;
       border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -103,42 +103,6 @@
       transition: color 0.2s;
     }
     .archivo-link:hover { color: #00aaff; }
-    /* FORO */
-    .foro-pregunta {
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-    .foro-pregunta-texto { font-size: 0.85rem; margin-bottom: 4px; }
-    .foro-meta {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.65rem; color: #6b7280;
-    }
-    .foro-respuesta {
-      padding: 10px 20px 10px 32px;
-      background: rgba(0,170,255,0.04);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.82rem; color: #9ca3af;
-    }
-    .foro-form { padding: 16px 20px; }
-    .foro-input {
-      width: 100%; padding: 10px 14px;
-      background: #13171f;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 6px; color: #e8ecf0;
-      font-size: 0.85rem; resize: none; outline: none;
-      box-sizing: border-box; margin-bottom: 10px;
-      transition: border-color 0.2s;
-    }
-    .foro-input:focus { border-color: #00aaff; }
-    .btn-preguntar {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700; font-size: 0.85rem;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      background: #00aaff; color: #000;
-      padding: 10px 20px; border-radius: 6px;
-      border: none; cursor: pointer; transition: background 0.2s;
-    }
-    .btn-preguntar:hover { background: #0090dd; }
     .progreso-bar {
       background: rgba(255,255,255,0.05);
       border-radius: 100px; height: 6px; margin: 0 20px 16px;
@@ -151,16 +115,16 @@
       font-size: 0.68rem; color: #6b7280;
       padding: 12px 20px 0; display: block;
     }
-    @media (max-width: 900px) {
-      .curso-section { padding: 80px 16px 40px; }
-      .curso-layout { grid-template-columns: 1fr; }
-    }
+    
   </style>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
-  <div class="curso-section">
 
+
+  <div class="campus-watermark" id="watermark"></div>
+
+  <div class="curso-section">
     <div class="curso-header">
       <a href="/Campus/MisCursos.aspx" class="back-link">← Volver a mis cursos</a>
       <div class="curso-titulo"><asp:Literal ID="litTitulo" runat="server" /></div>
@@ -168,44 +132,23 @@
 
     <div class="curso-layout">
 
-      <!-- VIDEO PRINCIPAL -->
+     
       <div>
         <div class="video-container">
           <div class="video-wrapper">
             <asp:Literal ID="litVideo" runat="server" />
+           
+            <div class="video-watermark" id="videoWatermark"></div>
           </div>
           <div class="video-info">
             <div class="video-titulo"><asp:Literal ID="litLeccionTitulo" runat="server" /></div>
             <div class="video-desc"><asp:Literal ID="litLeccionDesc" runat="server" /></div>
             <asp:Button ID="btnCompletar" runat="server" Text="MARCAR COMO COMPLETADA"
                 CssClass="btn-completar" OnClick="btnCompletar_Click" />
-          </div>
-        </div>
-
-        <!-- FORO -->
-        <div class="sidebar-box" style="margin-top:24px;">
-          <div class="sidebar-title">💬 Foro de preguntas</div>
-          <asp:Repeater ID="rptForo" runat="server">
-            <ItemTemplate>
-              <div class="foro-pregunta">
-                <div class="foro-pregunta-texto"><%# Eval("Pregunta") %></div>
-                <div class="foro-meta"><%# Eval("NombreAlumno") %> · <%# Eval("Fecha", "{0:dd/MM/yyyy HH:mm}") %></div>
-              </div>
-              <asp:Repeater ID="rptRespuestas" runat="server" DataSource='<%# Eval("Respuestas") %>'>
-                <ItemTemplate>
-                  <div class="foro-respuesta">
-                    ↳ <%# Eval("Respuesta") %>
-                    <span style="color:#00aaff;margin-left:8px;"><%# (bool)Eval("EsAdmin") ? "— HLChip" : "" %></span>
-                  </div>
-                </ItemTemplate>
-              </asp:Repeater>
-            </ItemTemplate>
-          </asp:Repeater>
-          <div class="foro-form">
-            <asp:TextBox ID="txtPregunta" runat="server" CssClass="foro-input" 
-                TextMode="MultiLine" Rows="3" placeholder="Escribí tu pregunta..." />
-            <asp:Button ID="btnPreguntar" runat="server" Text="ENVIAR PREGUNTA"
-                CssClass="btn-preguntar" OnClick="btnPreguntar_Click" />
+            <a href="/Campus/Foro.aspx?curso=<%# CursoId %>" 
+               style="display:inline-block;margin-top:12px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#00aaff;">
+               💬 Ver foro del curso →
+            </a>
           </div>
         </div>
       </div>

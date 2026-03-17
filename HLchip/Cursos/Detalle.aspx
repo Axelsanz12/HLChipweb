@@ -261,6 +261,8 @@
             <asp:FileUpload ID="fuComprobante" runat="server" 
                 style="width:100%;padding:10px;background:#050608;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#e8ecf0;font-size:0.85rem;" />
           </div>
+           <asp:Label ID="litErrorComprobante" runat="server" Visible="false"
+             style="color:#ff6b6b;font-family:'Share Tech Mono',monospace;font-size:0.75rem;display:block;margin-bottom:8px;" />
           <asp:Button ID="btnEnviarTransferencia" runat="server" Text="ENVIAR COMPROBANTE" 
               CssClass="btn-inscribir" OnClick="btnEnviarTransferencia_Click" />
         </asp:Panel>

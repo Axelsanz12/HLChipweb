@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
 using System.Web.UI;
 
 namespace HLchip.Campus
@@ -15,21 +14,20 @@ namespace HLchip.Campus
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["AlumnoId"] == null)
-                Response.Redirect("~/Campus/Login.aspx");
+            if (Session["AlumnoCampusId"] == null)
+                Response.Redirect("/Campus/Login.aspx");
 
             CursoId = int.Parse(Request.QueryString["id"] ?? "0");
-            if (CursoId == 0) Response.Redirect("~/Campus/MisCursos.aspx");
+            if (CursoId == 0) Response.Redirect("/Campus/MisCursos.aspx");
 
-            int idAlumno = int.Parse(Session["AlumnoId"].ToString());
+            int idAlumno = int.Parse(Session["AlumnoCampusId"].ToString());
 
             if (!IsPostBack)
             {
                 CargarCurso(idAlumno);
                 CargarLecciones(idAlumno);
-                CargarArchivos();
-                CargarForo();
                 ActualizarProgreso(idAlumno);
+                CargarArchivos();
             }
         }
 
@@ -66,22 +64,19 @@ namespace HLchip.Campus
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
-                // Leccion activa
                 int leccionId = int.Parse(Request.QueryString["leccion"] ?? "0");
                 if (leccionId == 0 && dt.Rows.Count > 0)
                     leccionId = int.Parse(dt.Rows[0]["Id"].ToString());
 
                 LeccionActualId = leccionId;
 
-                // Cargar video activo
                 foreach (DataRow row in dt.Rows)
                 {
                     if (int.Parse(row["Id"].ToString()) == leccionId)
                     {
                         litLeccionTitulo.Text = row["Titulo"].ToString();
                         litLeccionDesc.Text = row["Descripcion"].ToString();
-                        string url = row["UrlVideo"].ToString();
-                        url = ConvertirUrlEmbed(url);
+                        string url = ConvertirUrlEmbed(row["UrlVideo"].ToString());
                         litVideo.Text = $"<iframe src='{url}' allowfullscreen></iframe>";
 
                         bool completada = (bool)row["Completada"];
@@ -118,64 +113,14 @@ namespace HLchip.Campus
                 SqlDataAdapter da = new SqlDataAdapter(
                     "SELECT Nombre, Archivo FROM ArchivosCurso WHERE IdCurso = @IdCurso ORDER BY Orden", conn);
                 da.SelectCommand.Parameters.AddWithValue("@IdCurso", CursoId);
-
                 DataTable dt = new DataTable();
                 da.Fill(dt);
-
-                if (dt.Rows.Count > 0)
-                {
-                    rptArchivos.DataSource = dt;
-                    rptArchivos.DataBind();
-                }
-                else
-                {
-                    pnlSinArchivos.Visible = true;
-                }
+                if (dt.Rows.Count > 0) { rptArchivos.DataSource = dt; rptArchivos.DataBind(); }
+                else pnlSinArchivos.Visible = true;
             }
         }
 
-        private void CargarForo()
-        {
-            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                conn.Open();
-                SqlDataAdapter da = new SqlDataAdapter(@"
-                    SELECT fp.Id, fp.Pregunta, fp.Fecha,
-                           ac.Nombre AS NombreAlumno
-                    FROM ForoPreguntas fp
-                    INNER JOIN AlumnosCampus ac ON fp.IdAlumno = ac.Id
-                    WHERE fp.IdCurso = @IdCurso
-                    ORDER BY fp.Fecha DESC", conn);
-                da.SelectCommand.Parameters.AddWithValue("@IdCurso", CursoId);
 
-                DataTable dtPreguntas = new DataTable();
-                da.Fill(dtPreguntas);
-
-                // Cargar respuestas para cada pregunta
-                var listaPreguntas = new List<dynamic>();
-                foreach (DataRow row in dtPreguntas.Rows)
-                {
-                    int idPregunta = int.Parse(row["Id"].ToString());
-                    SqlDataAdapter daR = new SqlDataAdapter(
-                        "SELECT Respuesta, EsAdmin FROM ForoRespuestas WHERE IdPregunta = @Id ORDER BY Fecha", conn);
-                    daR.SelectCommand.Parameters.AddWithValue("@Id", idPregunta);
-                    DataTable dtR = new DataTable();
-                    daR.Fill(dtR);
-
-                    listaPreguntas.Add(new
-                    {
-                        Pregunta = row["Pregunta"].ToString(),
-                        NombreAlumno = row["NombreAlumno"].ToString(),
-                        Fecha = row["Fecha"],
-                        Respuestas = dtR
-                    });
-                }
-
-                rptForo.DataSource = listaPreguntas;
-                rptForo.DataBind();
-            }
-        }
 
         private void ActualizarProgreso(int idAlumno)
         {
@@ -206,17 +151,15 @@ namespace HLchip.Campus
                 cmdUpdate.Parameters.AddWithValue("@IdCurso", CursoId);
                 cmdUpdate.ExecuteNonQuery();
             }
-
             DataBind();
         }
 
         protected void btnCompletar_Click(object sender, EventArgs e)
         {
-            int idAlumno = int.Parse(Session["AlumnoId"].ToString());
+            int idAlumno = int.Parse(Session["AlumnoCampusId"].ToString());
             int leccionId = LeccionActualId == 0
                 ? int.Parse(Request.QueryString["leccion"] ?? "0")
                 : LeccionActualId;
-
             if (leccionId == 0) return;
 
             string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
@@ -249,32 +192,9 @@ namespace HLchip.Campus
                 }
             }
 
-            string qs = $"?id={CursoId}&leccion={leccionId}";
-            Response.Redirect("~/Campus/Cursos.aspx" + qs);
+            Response.Redirect($"/Campus/Cursos.aspx?id={CursoId}&leccion={leccionId}");
         }
 
-        protected void btnPreguntar_Click(object sender, EventArgs e)
-        {
-            string pregunta = txtPregunta.Text.Trim();
-            if (string.IsNullOrWhiteSpace(pregunta)) return;
 
-            int idAlumno = int.Parse(Session["AlumnoId"].ToString());
-            string connStr = ConfigurationManager.ConnectionStrings["HLChipDB"].ConnectionString;
-
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                SqlCommand cmd = new SqlCommand(@"
-                    INSERT INTO ForoPreguntas (IdCurso, IdAlumno, Pregunta, Fecha)
-                    VALUES (@IdCurso, @IdAlumno, @Pregunta, GETDATE())", conn);
-                cmd.Parameters.AddWithValue("@IdCurso", CursoId);
-                cmd.Parameters.AddWithValue("@IdAlumno", idAlumno);
-                cmd.Parameters.AddWithValue("@Pregunta", pregunta);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
-
-            txtPregunta.Text = "";
-            Response.Redirect(Request.RawUrl);
-        }
     }
 }

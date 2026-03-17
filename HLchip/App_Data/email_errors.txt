@@ -1,0 +1,20 @@
+13/03/2026 14:37:41: Se debe especificar una dirección de origen.
+13/03/2026 14:38:18: Se debe especificar una dirección de origen.
+13/03/2026 14:38:58: Se debe especificar una dirección de origen.
+13/03/2026 14:39:07: Se debe especificar una dirección de origen.
+13/03/2026 14:48:52: Se debe especificar una dirección de origen.
+13/03/2026 15:04:43: El servidor SMTP requiere una conexión segura o el cliente no se autenticó. La respuesta del servidor fue: 5.7.57 Client not authenticated to send mail. Error: 535 5.7.3 Authentication unsuccessful [SCYP152CA0004.LAMP152.PROD.OUTLOOK.COM 2026-03-13T18:04:43.700Z 08DE80E1F576A9FC]
+16/03/2026 15:34:05: Error enviando email a asanz@outlook.com.ar → El servidor SMTP requiere una conexión segura o el cliente no se autenticó. La respuesta del servidor fue: 5.7.57 Client not authenticated to send mail. Error: 535 5.7.3 Authentication unsuccessful [SCYP215CA0058.LAMP215.PROD.OUTLOOK.COM 2026-03-16T18:34:05.136Z 08DE82E062EBB0B2]
+   en System.Net.Mail.MailCommand.CheckResponse(SmtpStatusCode statusCode, String response)
+   en System.Net.Mail.MailCommand.Send(SmtpConnection conn, Byte[] command, MailAddress from, Boolean allowUnicode)
+   en System.Net.Mail.SmtpTransport.SendMail(MailAddress sender, MailAddressCollection recipients, String deliveryNotify, Boolean allowUnicode, SmtpFailedRecipientException& exception)
+   en System.Net.Mail.SmtpClient.Send(MailMessage message)
+   en HLchip.CampusHelper.EnviarEmailAcceso(String email, String nombre, String password, Boolean esNuevo) en C:\Users\sanza\Desktop\HLchip\HLchip\HLchip\Helpers\CampusHelper.cs:línea 158
+
+16/03/2026 15:34:19: Error enviando email a asanz@outlook.com.ar → El servidor SMTP requiere una conexión segura o el cliente no se autenticó. La respuesta del servidor fue: 5.7.57 Client not authenticated to send mail. Error: 535 5.7.3 Authentication unsuccessful [SCYP215CA0058.LAMP215.PROD.OUTLOOK.COM 2026-03-16T18:34:19.201Z 08DE82E062EBB0F9]
+   en System.Net.Mail.MailCommand.CheckResponse(SmtpStatusCode statusCode, String response)
+   en System.Net.Mail.MailCommand.Send(SmtpConnection conn, Byte[] command, MailAddress from, Boolean allowUnicode)
+   en System.Net.Mail.SmtpTransport.SendMail(MailAddress sender, MailAddressCollection recipients, String deliveryNotify, Boolean allowUnicode, SmtpFailedRecipientException& exception)
+   en System.Net.Mail.SmtpClient.Send(MailMessage message)
+   en HLchip.CampusHelper.EnviarEmailAcceso(String email, String nombre, String password, Boolean esNuevo) en C:\Users\sanza\Desktop\HLchip\HLchip\HLchip\Helpers\CampusHelper.cs:línea 158
+

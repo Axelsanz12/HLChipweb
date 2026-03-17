@@ -1,6 +1,5 @@
-﻿<%@ Page Title="Panel Admin" Language="C#" MasterPageFile="~/Site.Master" 
+﻿<%@ Page Title="Panel Admin" Language="C#" MasterPageFile="~/Site.Master"
     AutoEventWireup="true" CodeBehind="Panel.aspx.cs" Inherits="HLchip.Admin.Panel" %>
-
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
   <style>
     .admin-section { min-height: 100vh; padding: 90px 48px 80px; }
@@ -47,17 +46,28 @@
     .admin-table td { padding: 14px 16px; font-size: 0.88rem; color: #e8ecf0; border-bottom: 1px solid rgba(255,255,255,0.04); }
     .admin-table tr:hover td { background: rgba(0,170,255,0.03); }
     .badge { display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; padding: 3px 10px; border-radius: 100px; letter-spacing: 0.05em; }
-    .badge-pendiente  { background: rgba(254,188,46,0.1); color: #febc2e; border: 1px solid rgba(254,188,46,0.2); }
+    .badge-pendiente { background: rgba(254,188,46,0.1); color: #febc2e; border: 1px solid rgba(254,188,46,0.2); }
     .badge-confirmado { background: rgba(37,211,102,0.1); color: #25D366; border: 1px solid rgba(37,211,102,0.2); }
-    .badge-cancelado  { background: rgba(255,30,30,0.1);  color: #ff6b6b; border: 1px solid rgba(255,30,30,0.2); }
-    .badge-recibido   { background: rgba(0,170,255,0.1);  color: #00aaff; border: 1px solid rgba(0,170,255,0.2); }
-    .badge-noleida    { background: rgba(0,170,255,0.1);  color: #00aaff; border: 1px solid rgba(0,170,255,0.2); }
+    .badge-cancelado { background: rgba(255,30,30,0.1); color: #ff6b6b; border: 1px solid rgba(255,30,30,0.2); }
+    .badge-recibido { background: rgba(0,170,255,0.1); color: #00aaff; border: 1px solid rgba(0,170,255,0.2); }
+    .badge-noleida { background: rgba(0,170,255,0.1); color: #00aaff; border: 1px solid rgba(0,170,255,0.2); }
     .btn-accion { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 5px 12px; border-radius: 4px; cursor: pointer; border: none; transition: all 0.2s; margin-right: 4px; }
     .btn-confirmar { background: rgba(37,211,102,0.15); color: #25D366; }
     .btn-confirmar:hover { background: #25D366; color: #000; }
     .btn-cancelar { background: rgba(255,30,30,0.1); color: #ff6b6b; }
     .btn-cancelar:hover { background: #ff1e1e; color: #fff; }
+    .btn-sistema { background: rgba(254,188,46,0.1); color: #febc2e; border: 1px solid rgba(254,188,46,0.2); }
+    .btn-sistema:hover { background: rgba(254,188,46,0.2); }
     .empty-state { text-align: center; padding: 60px 20px; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: #6b7280; letter-spacing: 0.08em; }
+    .msg-sistema {
+      display: none; margin-top: 20px;
+      background: rgba(254,188,46,0.07);
+      border: 1px solid rgba(254,188,46,0.25);
+      border-radius: 10px; padding: 24px 28px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.82rem; color: #febc2e; line-height: 1.8;
+    }
+    .msg-sistema.visible { display: block; }
     @media (max-width: 768px) {
       .admin-section { padding: 80px 16px 40px; }
       .stats-row { grid-template-columns: repeat(2, 1fr); }
@@ -66,10 +76,8 @@
     }
   </style>
 </asp:Content>
-
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
   <div class="admin-section">
-
     <div class="admin-header">
       <div>
         <div class="admin-title">Panel <span>Admin</span></div>
@@ -77,7 +85,6 @@
       </div>
       <asp:Button ID="btnLogout" runat="server" Text="CERRAR SESIÓN" CssClass="btn-logout" OnClick="btnLogout_Click" />
     </div>
-
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-card-num blue"><asp:Literal ID="litTotalTurnos" runat="server">0</asp:Literal></div>
@@ -96,13 +103,13 @@
         <div class="stat-card-label">Consultas nuevas</div>
       </div>
     </div>
-
     <div class="tabs">
       <button type="button" class="tab active" onclick="mostrarTab('turnos', this)">Turnos</button>
       <button type="button" class="tab" onclick="mostrarTab('mapas', this)">Pedidos Mapas</button>
       <button type="button" class="tab" onclick="mostrarTab('inscripciones', this)">Cursos Online</button>
       <button type="button" class="tab" onclick="mostrarTab('presenciales', this)">Talleres</button>
       <button type="button" class="tab" onclick="mostrarTab('consultas', this)">Consultas</button>
+      <button type="button" class="tab" onclick="mostrarTab('cursos', this)">Cursos</button>
       <button type="button" class="tab" onclick="mostrarTab('campus', this)">Campus</button>
     </div>
 
@@ -177,7 +184,7 @@
       </asp:Panel>
     </div>
 
-    <!-- TAB CURSOS ONLINE -->
+    <!-- TAB CURSOS ONLINE (inscripciones) -->
     <div class="tab-content" id="tab-inscripciones">
       <table class="admin-table">
         <thead>
@@ -287,145 +294,243 @@
       </asp:Panel>
     </div>
 
+    <!-- TAB CURSOS (catálogo) -->
+    <div class="tab-content" id="tab-cursos">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#6b7280;">// Catálogo de cursos disponibles</span>
+        <button type="button" class="btn-accion btn-sistema" onclick="mostrarMsgSistema()">+ Agregar / Editar curso</button>
+      </div>
+      <div id="msgSistema" class="msg-sistema">
+        ⚠ Para agregar, editar o eliminar cursos del catálogo contactá al equipo técnico:<br><br>
+        📱 WhatsApp: <strong><a href="https://wa.me/5491138776066" target="_blank" style="color:#febc2e;">+54 9 11 38776066</a></strong><br>
+        ✉ Email: <strong style="color:#febc2e;">axelsanz12@hotmail.com</strong><br><br>
+        <span style="color:#6b7280;font-size:0.75rem;">// Este servicio tiene costo adicional según los cambios solicitados.</span>
+      </div>
+      <table class="admin-table" style="margin-top:16px;">
+        <thead>
+          <tr>
+            <th>#</th><th>Nombre</th><th>Modalidad</th><th>Duración</th><th>Precio</th><th>Estado</th><th>Orden</th>
+          </tr>
+        </thead>
+        <tbody>
+          <asp:Repeater ID="rptCursos" runat="server">
+            <ItemTemplate>
+              <tr>
+                <td><%# Eval("Id") %></td>
+                <td><%# Eval("Nombre") %></td>
+                <td><%# Eval("Modalidad") %></td>
+                <td><%# Eval("Duracion") %></td>
+                <td style="color:#25D366;font-family:'Share Tech Mono',monospace;">$<%# String.Format("{0:N0}", Eval("Precio")) %></td>
+                <td><span class="badge <%# (bool)Eval("Activo") ? "badge-confirmado" : "badge-cancelado" %>"><%# (bool)Eval("Activo") ? "Activo" : "Inactivo" %></span></td>
+                <td><%# Eval("Orden") %></td>
+              </tr>
+            </ItemTemplate>
+          </asp:Repeater>
+        </tbody>
+      </table>
+      <asp:Panel ID="pnlSinCursos" runat="server" Visible="false">
+        <div class="empty-state">// No hay cursos cargados todavía</div>
+      </asp:Panel>
+    </div>
+
     <!-- TAB CAMPUS -->
     <div class="tab-content" id="tab-campus">
-
-      <div style="margin-bottom:24px;display:flex;gap:12px;align-items:center;">
-        <asp:DropDownList ID="ddlCursosCampus" runat="server" CssClass="form-select"
-            AutoPostBack="true" OnSelectedIndexChanged="ddlCursosCampus_Changed"
-            style="background:#0e1118;border:1px solid rgba(255,255,255,0.08);color:#e8ecf0;padding:10px 14px;border-radius:6px;font-size:0.85rem;" />
-      </div>
-
-      <!-- LECCIONES -->
-      <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:24px;">
-        <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;">📚 Lecciones</span>
-          <asp:Button ID="btnNuevaLeccion" runat="server" Text="+ NUEVA LECCIÓN" CssClass="btn-accion btn-confirmar" OnClick="btnNuevaLeccion_Click" />
-        </div>
-        <table class="admin-table">
-          <thead>
-            <tr><th>#</th><th>Título</th><th>URL Video</th><th>Orden</th><th>Activo</th><th>Acciones</th></tr>
-          </thead>
-          <tbody>
-            <asp:Repeater ID="rptLecciones" runat="server" OnItemCommand="rptLecciones_ItemCommand">
-              <ItemTemplate>
-                <tr>
-                  <td><%# Eval("Id") %></td>
-                  <td><%# Eval("Titulo") %></td>
-                  <td style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#00aaff;"><%# Eval("UrlVideo") %></td>
-                  <td><%# Eval("Orden") %></td>
-                  <td><span class="badge <%# (bool)Eval("Activo") ? "badge-confirmado" : "badge-cancelado" %>"><%# (bool)Eval("Activo") ? "Sí" : "No" %></span></td>
-                  <td>
-                    <asp:LinkButton runat="server" CommandName="EditarLeccion" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-confirmar">✎ Editar</asp:LinkButton>
-                    <asp:LinkButton runat="server" CommandName="EliminarLeccion" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-cancelar">✕ Eliminar</asp:LinkButton>
-                  </td>
-                </tr>
-              </ItemTemplate>
-            </asp:Repeater>
-          </tbody>
-        </table>
-        <asp:Panel ID="pnlSinLecciones" runat="server" Visible="false">
-          <div class="empty-state">// No hay lecciones cargadas todavía</div>
-        </asp:Panel>
-      </div>
-
-      <!-- FORM LECCION -->
-      <asp:Panel ID="pnlFormLeccion" runat="server" Visible="false"
-          style="background:#0e1118;border:1px solid rgba(0,170,255,0.2);border-radius:10px;padding:24px;margin-bottom:24px;">
-        <asp:HiddenField ID="hfIdLeccion" runat="server" Value="0" />
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;color:#00aaff;">
-          <asp:Literal ID="litFormLeccionTitulo" runat="server">Nueva Lección</asp:Literal>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div>
-            <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">TÍTULO</label>
-            <asp:TextBox ID="txtLeccionTitulo" runat="server" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
+      <asp:UpdatePanel ID="upCampus" runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
+          <div style="margin-bottom:24px;display:flex;gap:12px;align-items:center;">
+            <asp:DropDownList ID="ddlCursosCampus" runat="server" CssClass="form-select"
+              AutoPostBack="true" OnSelectedIndexChanged="ddlCursosCampus_Changed"
+              style="background:#0e1118;border:1px solid rgba(255,255,255,0.08);color:#e8ecf0;padding:10px 14px;border-radius:6px;font-size:0.85rem;" />
           </div>
-          <div>
-            <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">URL VIDEO (YouTube/Vimeo)</label>
-            <asp:TextBox ID="txtLeccionUrl" runat="server" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
-          </div>
-        </div>
-        <div style="margin-bottom:16px;">
-          <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">DESCRIPCIÓN</label>
-          <asp:TextBox ID="txtLeccionDesc" runat="server" TextMode="MultiLine" Rows="3" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;resize:none;" />
-        </div>
-        <div style="margin-bottom:16px;">
-          <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">ORDEN</label>
-          <asp:TextBox ID="txtLeccionOrden" runat="server" Text="1" style="width:100px;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
-        </div>
-        <asp:Button ID="btnGuardarLeccion" runat="server" Text="GUARDAR LECCIÓN" CssClass="btn-accion btn-confirmar" OnClick="btnGuardarLeccion_Click" style="padding:10px 24px;" />
-        <asp:Button ID="btnCancelarLeccion" runat="server" Text="CANCELAR" CssClass="btn-accion btn-cancelar" OnClick="btnCancelarLeccion_Click" style="padding:10px 24px;" />
-      </asp:Panel>
 
-      <!-- FORO ADMIN -->
-      <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
-        <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;">💬 Foro — Preguntas sin responder</span>
-        </div>
-        <asp:Repeater ID="rptForoAdmin" runat="server" OnItemCommand="rptForoAdmin_ItemCommand">
-          <ItemTemplate>
-            <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.04);<%# (int)Eval("Respondida") == 1 ? "opacity:0.6;" : "" %>">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-                <span class="badge <%# (int)Eval("Respondida") == 1 ? "badge-confirmado" : "badge-pendiente" %>">
-                  <%# (int)Eval("Respondida") == 1 ? "Respondida" : "Sin responder" %>
-                </span>
-                <span style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:#6b7280;">
-                  <%# Eval("NombreAlumno") %> · <%# Eval("Curso") %> · <%# Eval("Fecha", "{0:dd/MM/yyyy HH:mm}") %>
-                </span>
+          <!-- LECCIONES -->
+          <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:24px;">
+            <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;">📚 Lecciones</span>
+              <asp:Button ID="btnNuevaLeccion" runat="server" Text="+ NUEVA LECCIÓN" CssClass="btn-accion btn-confirmar" OnClick="btnNuevaLeccion_Click" />
+            </div>
+            <table class="admin-table">
+              <thead>
+                <tr><th>#</th><th>Título</th><th>URL Video</th><th>Orden</th><th>Activo</th><th>Acciones</th></tr>
+              </thead>
+              <tbody>
+                <asp:Repeater ID="rptLecciones" runat="server" OnItemCommand="rptLecciones_ItemCommand">
+                  <ItemTemplate>
+                    <tr>
+                      <td><%# Eval("Id") %></td>
+                      <td><%# Eval("Titulo") %></td>
+                      <td style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:#00aaff;"><%# Eval("UrlVideo") %></td>
+                      <td><%# Eval("Orden") %></td>
+                      <td><span class="badge <%# (bool)Eval("Activo") ? "badge-confirmado" : "badge-cancelado" %>"><%# (bool)Eval("Activo") ? "Sí" : "No" %></span></td>
+                      <td>
+                        <asp:LinkButton runat="server" CommandName="EditarLeccion" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-confirmar">✎ Editar</asp:LinkButton>
+                        <asp:LinkButton runat="server" CommandName="EliminarLeccion" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-cancelar">✕ Eliminar</asp:LinkButton>
+                      </td>
+                    </tr>
+                  </ItemTemplate>
+                </asp:Repeater>
+              </tbody>
+            </table>
+            <asp:Panel ID="pnlSinLecciones" runat="server" Visible="false">
+              <div class="empty-state">// No hay lecciones cargadas todavía</div>
+            </asp:Panel>
+          </div>
+
+          <!-- FORM NUEVA/EDITAR LECCIÓN -->
+          <asp:Panel ID="pnlFormLeccion" runat="server" Visible="false"
+            style="background:#0e1118;border:1px solid rgba(0,170,255,0.2);border-radius:10px;padding:24px;margin-bottom:24px;">
+            <asp:HiddenField ID="hfIdLeccion" runat="server" Value="0" />
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;color:#00aaff;">
+              <asp:Literal ID="litFormLeccionTitulo" runat="server">Nueva Lección</asp:Literal>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+              <div>
+                <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">TÍTULO</label>
+                <asp:TextBox ID="txtLeccionTitulo" runat="server" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
               </div>
-              <div style="font-size:0.88rem;margin-bottom:12px;padding:10px 14px;background:rgba(255,255,255,0.03);border-radius:6px;">
-                <%# Eval("Pregunta") %>
-              </div>
-              <asp:Repeater ID="rptRespuestasAdmin" runat="server">
-                <ItemTemplate>
-                  <div style="padding:8px 14px;margin-bottom:6px;border-radius:6px;
-                       background:<%# (bool)Eval("EsAdmin") ? "rgba(0,170,255,0.08)" : "rgba(255,255,255,0.03)" %>;
-                       border-left:2px solid <%# (bool)Eval("EsAdmin") ? "#00aaff" : "rgba(255,255,255,0.1)" %>;">
-                    <span style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;
-                          color:<%# (bool)Eval("EsAdmin") ? "#00aaff" : "#6b7280" %>;">
-                      <%# (bool)Eval("EsAdmin") ? "HLChip Admin" : "Alumno" %> · <%# Eval("Fecha", "{0:dd/MM HH:mm}") %>
-                    </span>
-                    <div style="font-size:0.85rem;margin-top:4px;"><%# Eval("Respuesta") %></div>
-                  </div>
-                </ItemTemplate>
-              </asp:Repeater>
-              <div style="display:flex;gap:8px;margin-top:10px;">
-                <asp:TextBox ID="txtRespuesta" runat="server" placeholder="Escribí tu respuesta..."
-                    style="flex:1;padding:8px 12px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.82rem;" />
-                <asp:LinkButton runat="server" CommandName="Responder" CommandArgument='<%# Eval("Id") %>'
-                    CssClass="btn-accion btn-confirmar" style="padding:8px 16px;">✓ Responder</asp:LinkButton>
+              <div>
+                <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">URL VIDEO (YouTube/Vimeo)</label>
+                <asp:TextBox ID="txtLeccionUrl" runat="server" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
               </div>
             </div>
-          </ItemTemplate>
-        </asp:Repeater>
-        <asp:Panel ID="pnlSinPreguntas" runat="server" Visible="false">
-          <div class="empty-state">// No hay preguntas sin responder</div>
-        </asp:Panel>
-      </div>
+            <div style="margin-bottom:16px;">
+              <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">DESCRIPCIÓN</label>
+              <asp:TextBox ID="txtLeccionDesc" runat="server" TextMode="MultiLine" Rows="3" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;resize:none;" />
+            </div>
+            <div style="margin-bottom:16px;">
+              <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">ORDEN</label>
+              <asp:TextBox ID="txtLeccionOrden" runat="server" Text="1" style="width:100px;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
+            </div>
+            <asp:Button ID="btnGuardarLeccion" runat="server" Text="GUARDAR LECCIÓN" CssClass="btn-accion btn-confirmar" OnClick="btnGuardarLeccion_Click" style="padding:10px 24px;" />
+            <asp:Button ID="btnCancelarLeccion" runat="server" Text="CANCELAR" CssClass="btn-accion btn-cancelar" OnClick="btnCancelarLeccion_Click" style="padding:10px 24px;" />
+          </asp:Panel>
 
+          <!-- MATERIALES -->
+          <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-bottom:24px;">
+            <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;">📎 Materiales</span>
+              <asp:Button ID="btnNuevoMaterial" runat="server" Text="+ SUBIR MATERIAL" CssClass="btn-accion btn-confirmar" OnClick="btnNuevoMaterial_Click" />
+            </div>
+            <table class="admin-table">
+              <thead>
+                <tr><th>#</th><th>Nombre</th><th>Archivo</th><th>Orden</th><th>Acciones</th></tr>
+              </thead>
+              <tbody>
+                <asp:Repeater ID="rptMateriales" runat="server" OnItemCommand="rptMateriales_ItemCommand">
+                  <ItemTemplate>
+                    <tr>
+                      <td><%# Eval("Id") %></td>
+                      <td><%# Eval("Nombre") %></td>
+                      <td><a href="/Uploads/Cursos/<%# Eval("Archivo") %>" target="_blank" style="color:#00aaff;font-family:'Share Tech Mono',monospace;font-size:0.72rem;">Ver archivo</a></td>
+                      <td><%# Eval("Orden") %></td>
+                      <td>
+                        <asp:LinkButton runat="server" CommandName="EliminarMaterial" CommandArgument='<%# Eval("Id") %>' CssClass="btn-accion btn-cancelar">✕ Eliminar</asp:LinkButton>
+                      </td>
+                    </tr>
+                  </ItemTemplate>
+                </asp:Repeater>
+              </tbody>
+            </table>
+            <asp:Panel ID="pnlSinMateriales" runat="server" Visible="false">
+              <div class="empty-state">// No hay materiales cargados todavía</div>
+            </asp:Panel>
+          </div>
+
+          <!-- FORM SUBIR MATERIAL -->
+          <asp:Panel ID="pnlFormMaterial" runat="server" Visible="false"
+            style="background:#0e1118;border:1px solid rgba(0,170,255,0.2);border-radius:10px;padding:24px;margin-bottom:24px;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;color:#00aaff;">
+              Subir Material
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+              <div>
+                <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">NOMBRE DEL MATERIAL</label>
+                <asp:TextBox ID="txtMaterialNombre" runat="server" style="width:100%;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
+              </div>
+              <div>
+                <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">ORDEN</label>
+                <asp:TextBox ID="txtMaterialOrden" runat="server" Text="1" style="width:100px;padding:10px 14px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;font-size:0.85rem;box-sizing:border-box;" />
+              </div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <label style="font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:#6b7280;display:block;margin-bottom:6px;">ARCHIVO (PDF, ZIP, etc.)</label>
+              <asp:FileUpload ID="fuMaterial" runat="server" style="color:#e8ecf0;font-size:0.85rem;" />
+            </div>
+            <asp:Button ID="btnGuardarMaterial" runat="server" Text="GUARDAR MATERIAL" CssClass="btn-accion btn-confirmar" OnClick="btnGuardarMaterial_Click" style="padding:10px 24px;" />
+            <asp:Button ID="btnCancelarMaterial" runat="server" Text="CANCELAR" CssClass="btn-accion btn-cancelar" OnClick="btnCancelarMaterial_Click" style="padding:10px 24px;" />
+          </asp:Panel>
+        </ContentTemplate>
+      </asp:UpdatePanel>
     </div>
+
+    <!-- FORO ADMIN -->
+    <asp:UpdatePanel ID="upForo" runat="server" UpdateMode="Conditional">
+      <ContentTemplate>
+        <div style="background:#0e1118;border:1px solid rgba(255,255,255,0.07);border-radius:10px;margin-top:32px;">
+          <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.07);">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;">💬 Foro — Sin responder</span>
+          </div>
+          <asp:Repeater ID="rptForoAdmin" runat="server" OnItemCommand="rptForoAdmin_ItemCommand">
+            <ItemTemplate>
+              <div style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.04);">
+                <div style="font-size:1.1rem; margin-bottom:8px; color:#00aaff;">
+                  <%# Eval("Pregunta") %>
+                </div>
+                <div style="font-size:0.8rem; color:#6b7280; margin-bottom:12px;">
+                  <%# Eval("NombreAlumno") %> · <%# Eval("Curso") %> · <%# Eval("Fecha", "{0:dd/MM/yyyy HH:mm}") %>
+                </div>
+
+                <!-- Hilo de respuestas -->
+                <asp:Repeater ID="rptRespuestasAdmin" runat="server">
+                  <ItemTemplate>
+                    <div style="margin-left:20px; padding:8px; background:rgba(255,255,255,0.03); border-radius:6px; margin-bottom:8px;">
+                      <small style="color:#6b7280;">
+                        <%# (bool)Eval("EsAdmin") ? "HLChip Admin" : Eval("NombreAlumno") %> · <%# Eval("Fecha", "{0:dd/MM HH:mm}") %>
+                      </small>
+                      <div style="margin-top:4px;"><%# Eval("Respuesta") %></div>
+                    </div>
+                  </ItemTemplate>
+                </asp:Repeater>
+
+                <!-- Responder -->
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                  <asp:TextBox ID="txtRespuesta" runat="server" placeholder="Escribí tu respuesta..."
+                    style="flex:1;padding:8px 12px;background:#13171f;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#e8ecf0;" />
+                  <asp:LinkButton runat="server" CommandName="Responder" CommandArgument='<%# Eval("Id") %>'
+                    CssClass="btn-accion btn-confirmar" style="padding:8px 16px;">✓ Responder</asp:LinkButton>
+                </div>
+              </div>
+            </ItemTemplate>
+          </asp:Repeater>
+
+          <asp:Panel ID="pnlSinPreguntas" runat="server" Visible="false">
+            <div class="empty-state">// No hay preguntas sin responder 🎉</div>
+          </asp:Panel>
+        </div>
+      </ContentTemplate>
+    </asp:UpdatePanel>
+
   </div>
 
   <script>
-  
-          function mostrarTab(nombre, el) {
-              document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      function mostrarTab(nombre, el) {
+          document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
           document.getElementById('tab-' + nombre).classList.add('active');
           el.classList.add('active');
           sessionStorage.setItem('tabActivo', nombre);
-  }
-
-          window.onload = function () {
-    // Primero chequear querystring
-    var params = new URLSearchParams(window.location.search);
+      }
+      window.onload = function () {
+          var params = new URLSearchParams(window.location.search);
           var tab = params.get('tab') || sessionStorage.getItem('tabActivo');
           if (tab) {
-      var el = document.querySelector('.tab[onclick*="' + tab + '"]');
-          if (el) mostrarTab(tab, el);
-    }
-  };
-
+              var el = document.querySelector('.tab[onclick*="' + tab + '"]');
+              if (el) mostrarTab(tab, el);
+          }
+      };
+      function mostrarMsgSistema() {
+          var msg = document.getElementById('msgSistema');
+          msg.classList.toggle('visible');
+      }
   </script>
 </asp:Content>

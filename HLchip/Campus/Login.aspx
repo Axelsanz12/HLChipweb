@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Campus HLChip" Language="C#" MasterPageFile="~/Site.Master" 
+﻿<%@ Page Title="Campus HLChip" Language="C#" MasterPageFile="~/Campus/Campus.Master" 
     AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="HLchip.Campus.Login" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">

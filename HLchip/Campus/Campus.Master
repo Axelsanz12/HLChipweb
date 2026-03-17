@@ -1,0 +1,154 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Campus.Master.cs" Inherits="HLchip.Campus.CampusMaster" %>
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HLChip Campus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #080a0f;
+            color: #e8ecf0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        .campus-nav {
+            background: #0e1118;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+        .campus-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+        .campus-logo {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 900;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #e8ecf0;
+            letter-spacing: 0.05em;
+        }
+        .campus-logo span { color: #00aaff; }
+        .campus-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+        }
+        .campus-nav-links a {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.78rem;
+            color: #9ca3af;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+            transition: color 0.2s, background 0.2s;
+        }
+        .campus-nav-links a:hover,
+        .campus-nav-links a.active {
+            color: #e8ecf0;
+            background: rgba(255,255,255,0.05);
+        }
+        .campus-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .campus-nav-user {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.78rem;
+            color: #6b7280;
+        }
+        .campus-nav-user span { color: #00aaff; }
+        .btn-salir {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem;
+            color: #6b7280;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            padding: 6px 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .btn-salir:hover { color: #ff6b6b; border-color: rgba(255,107,107,0.3); }
+
+        /* ── CONTENIDO ── */
+        .campus-content {
+            padding-top: 60px;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <form id="frmCampus" runat="server">
+
+        <nav class="campus-nav" runat="server" id="navCampus">
+            <div class="campus-nav-left">
+              <a href="/Campus/MisCursos.aspx" class="campus-logo">
+                     HL<span>Chip</span> Campus
+                    </a>
+                    <ul class="campus-nav-links">
+                        <li><a href="/Campus/MisCursos.aspx">Inicio</a></li>
+                        <li><a href="/Campus/MisCursos.aspx">Mis Cursos</a></li>
+                    </ul>
+            </div>
+            <div class="campus-nav-right">
+                <asp:Literal ID="litNavUser" runat="server" />
+                <asp:LinkButton ID="lnkSalir" runat="server" CssClass="btn-salir" 
+                    OnClick="lnkSalir_Click">Salir</asp:LinkButton>
+            </div>
+        </nav>
+
+        <div class="campus-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+
+        <!-- MARCA DE AGUA -->
+<div id="campusWatermark" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;"></div>
+<script>
+    (function(){
+        var n = '<%: Session["AlumnoCampusNombre"] != null ? Session["AlumnoCampusNombre"].ToString() : "" %>';
+        if(!n) return;
+        var t = "HLCHIP \u2014 " + n;
+        function gen(){
+            var w = document.getElementById('campusWatermark');
+            w.innerHTML='';
+            var cols = Math.ceil(window.innerWidth/200)+2;
+            var rows = Math.ceil(window.innerHeight/100)+2;
+            for(var r=0;r<rows;r++){
+                for(var c=0;c<cols;c++){
+                    var s=document.createElement('span');
+                    s.textContent=t;
+                    s.style.cssText = 'position:absolute;font-family:monospace;font-size:1.1rem;color:rgba(255,255,255,0.08);white-space:nowrap;transform:rotate(-30deg);user-select:none;letter-spacing:0.1em;left:'
+                        + (c * 240 - 60) + 'px;top:' + (r * 120 - 20) + 'px;';
+                    w.appendChild(s);
+                }
+            }
+        }
+        gen();
+        setInterval(gen,3000);
+        window.addEventListener('resize',gen);
+    })();
+</script>
+
+    </form>
+</body>
+</html>

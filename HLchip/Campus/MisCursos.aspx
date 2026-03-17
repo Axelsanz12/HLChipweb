@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Mis Cursos" Language="C#" MasterPageFile="~/Site.Master" 
+﻿<%@ Page Title="Mis Cursos" Language="C#" MasterPageFile="~/Campus/Campus.Master"
     AutoEventWireup="true" CodeBehind="MisCursos.aspx.cs" Inherits="HLchip.Campus.MisCursos" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
@@ -106,7 +106,11 @@
                 <div class="progreso-fill" style="width:<%# Eval("Progreso") %>%"></div>
               </div>
               <div class="progreso-label">Progreso: <%# Eval("Progreso") %>%</div>
-              <a href="/Campus/Cursos.aspx?id=<%# Eval("IdCurso") %>" class="btn-ver">Ir al curso→</a>
+                <div style="font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:#6b7280;margin-bottom:16px;">
+                  ⏱ Acceso hasta: <span style="color:#febc2e;"><%# Eval("FechaVencimiento") != DBNull.Value ? ((DateTime)Eval("FechaVencimiento")).ToString("dd/MM/yyyy") : "Sin límite" %></span>
+                </div>
+              <a href="/Campus/Cursos.aspx?id=<%# Eval("IdCurso") %>" class="btn-ver">Ir al curso →</a>
+              <a href="/Campus/Foro.aspx?curso=<%# Eval("IdCurso") %>" class="btn-ver" style="background:transparent;border:1px solid rgba(0,170,255,0.3);color:#00aaff;margin-left:8px;">💬 Foro</a>
             </div>
           </div>
         </ItemTemplate>

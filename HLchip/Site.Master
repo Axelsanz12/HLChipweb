@@ -131,20 +131,20 @@
     <a href="/Default.aspx" class="nav-logo">HL<span>chip</span></a>
     <ul class="nav-links">
       <li><a href="/Default.aspx#servicios">Servicios</a></li>
-      <li><a href="/Default.aspx#que-es">Chiptuning</a></li>
+      <li><a href="/Campus/Login.aspx">Campus</a></li>
       <li><a href="/Cursos/Index.aspx">Cursos online</a></li>
       <li><a href="/Cursos/Presenciales.aspx">Curso presencial / talleres</a></li>
       <li><a href="/Mapas/NuevoPedido.aspx">Mapas</a></li>
       <li><a href="/Turnos.aspx">Turnos</a></li>
       <li><a href="/Contact.aspx">Contacto</a></li>
     </ul>
-    <div class="nav-right">
-      <asp:HyperLink ID="lnkAdmin" runat="server" NavigateUrl="~/Admin/Panel.aspx" CssClass="nav-admin">&#9881; Panel</asp:HyperLink>
-      <asp:HyperLink ID="lnkCampusAdmin" runat="server" NavigateUrl="~/Admin/Panel.aspx?tab=campus" CssClass="nav-campus">🎓 Campus</asp:HyperLink>
-      <asp:HyperLink ID="lnkCampusAlumno" runat="server" NavigateUrl="~/Campus/MisCursos.aspx" CssClass="nav-campus">🎓 Mi Campus</asp:HyperLink>
-      <asp:HyperLink ID="lnkSalir" runat="server" NavigateUrl="~/Logout.aspx" CssClass="nav-salir">Salir</asp:HyperLink>
-      <asp:LinkButton ID="lnkSalirAlumno" runat="server" CssClass="nav-salir" OnClick="lnkSalirAlumno_Click">Salir</asp:LinkButton>
-      <a href="https://wa.me/541123177778" target="_blank" class="nav-cta">WhatsApp</a>
+            <div class="nav-right">
+             <div class="nav-right">
+            <asp:HyperLink ID="lnkAdmin" runat="server" NavigateUrl="~/Admin/Panel.aspx" CssClass="nav-admin">&#9881; Panel</asp:HyperLink>
+            <asp:HyperLink ID="lnkSalir" runat="server" NavigateUrl="~/Logout.aspx" CssClass="nav-salir">Salir</asp:HyperLink>
+            <a href="/Admin/Login.aspx" class="nav-admin" style="color:#ff6b6b;border-color:rgba(255,30,30,0.3);">🔑 Admin</a>
+            <a href="https://wa.me/541123177778" target="_blank" class="nav-cta">WhatsApp</a>
+        </div>
     </div>
   </nav>
 
